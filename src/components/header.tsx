@@ -1,22 +1,23 @@
-import { useEffect } from "react";
-import { deleteCookie } from "cookies-next";
-import { useRouter } from "next/router";
+import { useEffect } from "react"
+import { deleteCookie } from "cookies-next"
+import { useRouter } from "next/router"
 
 import { useUser } from "../lib/hooks"
+import Link from "next/link"
 
 function User(): JSX.Element {
-  const { user, error } = useUser();
+  const { user, error } = useUser()
   useEffect(() => {
-    console.log("header: ", { user, error });
-  }, [user, error]);
+    console.log("header: ", { user, error })
+  }, [user, error])
   
   const router = useRouter()
   // passing the redirect route to the API call
-  const href = `/api/google?redirect=${router.pathname}`;
+  const href = `/api/google?redirect=${router.pathname}`
   const logout = () => {
-    deleteCookie("token");
-    router.replace("/");
-  };
+    deleteCookie("token")
+    router.replace("/")
+  }
   
   if (user && !error) {
     return (
@@ -45,10 +46,11 @@ export default function Header(): JSX.Element {
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex justify-between items-center border-b-2 border-gray-100 py-6 md:justify-start md:space-x-10">
           <div className="flex justify-start lg:w-0 lg:flex-1">
-            <a href="/">
-              <span className="sr-only">Workflow</span>
-              Logo
-            </a>
+            <Link href="/">
+              <a>
+                Logo
+              </a>
+            </Link>
           </div>
           <div className="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
             <User />

@@ -1,8 +1,8 @@
-import passport from "passport";
-import { Strategy as GoogleStrategy } from "passport-google-oauth2";
-import jwt from "jsonwebtoken";
+import passport from "passport"
+import { Strategy as GoogleStrategy } from "passport-google-oauth2"
+import jwt from "jsonwebtoken"
 
-import { findByEmailOrCreate } from "../models/user";
+import { findByEmailOrCreate } from "../models/user"
 
 passport.use(
 	"google",
@@ -17,7 +17,7 @@ passport.use(
 				const user = await findByEmailOrCreate({
 					email: profile.email,
 					displayName: profile.displayName,
-				});
+				})
 
 				const token = jwt.sign(
 					{
@@ -25,18 +25,18 @@ passport.use(
 						created: Date.now().toString(),
 					},
 					process.env.JWT_SECRET
-				);
+				)
 
 				done(null, { ...user, id: undefined }, {
 					message: "Auth successful",
 					token,
-				} as any);
+				} as any)
 			} catch (err) {
-				console.error(err);
-				done(err, false, { message: "Internal server error" });
+				console.error(err)
+				done(err, false, { message: "Internal server error" })
 			}
 		}
 	)
-);
+)
 
-export default passport;
+export default passport
