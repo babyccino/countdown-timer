@@ -1,50 +1,61 @@
 import Head from 'next/head'
-import { useState } from 'react';
+import { FormEventHandler, useState } from 'react' 
 
-import Layout from '../../components/layout';
-
-// const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-//   event.preventDefault()
-//   const form = event.currentTarget
-//   const formElements = form.elements as (typeof form.elements & {
-//     title: HTMLInputElement,
-//     endDate: HTMLInputElement,
-//     visibility: HTMLInputElement,
-//     password?: HTMLInputElement,
-//   })
-//   const title = formElements.title.value;
-//   const endDate = formElements.endDate.value;
-//   const visibility = formElements.visibility.value;
-//   const password = formElements.password?.value;
-// }
+import axios from "axios"
+import { useRouter } from 'next/router'
 
 function htmlMinDateFormat(dateTime: Date): string {
-  const year = dateTime.getUTCFullYear();
-  const _month = dateTime.getUTCMonth() + 1;
-  const month = (_month < 10 ? "0" : "") + _month;
-  const _date = dateTime.getUTCDate();
-  const date = (_date < 10 ? "0" : "") + _date;
-  const _hour = dateTime.getUTCHours();
-  const hour = (_hour < 10 ? "0" : "") + _hour;
-  const _minute = dateTime.getUTCMinutes();
-  const minute = (_minute < 10 ? "0" : "") + _minute;
+  const year = dateTime.getUTCFullYear()
+  const _month = dateTime.getUTCMonth() + 1
+  const month = (_month < 10 ? "0" : "") + _month
+  const _date = dateTime.getUTCDate()
+  const date = (_date < 10 ? "0" : "") + _date
+  const _hour = dateTime.getUTCHours()
+  const hour = (_hour < 10 ? "0" : "") + _hour
+  const _minute = dateTime.getUTCMinutes()
+  const minute = (_minute < 10 ? "0" : "") + _minute
 
-  return `${year}-${month}-${date}T${hour}:${minute}`;
+  return `${year}-${month}-${date}T${hour}:${minute}`
 }
 
 function getCurrentDateHtmlFormat(): string {
-  return htmlMinDateFormat(new Date());
+  return htmlMinDateFormat(new Date())
 }
 
 export default function Create() {
-  const [visibility, setVisibility] = useState("Public");
+  const [visibility, setVisibility] = useState("Public")
+  const router = useRouter();
 
-  // const handleDateChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-  //   const date = new Date(e.target.value);
-  // }
+  const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
+    event.preventDefault()
+
+    const form = event.currentTarget
+    const formElements = form.elements as (typeof form.elements & {
+      title: HTMLInputElement,
+      endDate: HTMLInputElement,
+      visibility: HTMLInputElement,
+      password?: HTMLInputElement,
+    })
+    const title = formElements.title.value
+    const endDate = formElements.endDate.value
+    const visibility = formElements.visibility.value
+    const password = formElements.password?.value
+
+    const data = {
+      title,
+      endDate,
+      visibility,
+      password,
+    }
+
+    const { data: returnData } = (await axios.post("/api/timer", data))
+    console.log({returnData})
+    
+    router.push(returnData.redirect)
+  }
 
   return (
-    <Layout>
+    <>
       <Head>
         <title>Create a timer</title>
         <meta name="description" content="Create an online timer you can share with your friends!" />
@@ -58,7 +69,7 @@ export default function Create() {
             </div>
           </div>
           <div className="mt-5 md:mt-0 md:col-span-2 border-l-2 border-gray-100">
-            <form action="/api/timer" method='POST'>
+            <form onSubmit={handleSubmit}>
               <div className="overflow-hidden sm:rounded-md flex flex-col justify-between">
                 <div className="px-6 py-4 bg-white">
                   <div className="grid grid-cols-6 gap-6">
@@ -70,7 +81,7 @@ export default function Create() {
                         id="title"
                         name="title"
                         required
-                        pattern="[a-z0-9]{1-100}"
+                        // pattern="[a-z0-9]{1-100}"
                         minLength={1}
                         maxLength={100}
                         title="Titles must be alphanumeric and between 1 and 100 characters long"
@@ -134,6 +145,6 @@ export default function Create() {
           </div>
         </div>
       </div>
-    </Layout>
-  );
+    </>
+  )
 }

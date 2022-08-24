@@ -1,14 +1,15 @@
 import Head from "next/head"
-import React from "react"
-
-import Layout from "../components/layout";
+import Link from "next/link"
 
 export default function Index() {
   return (
-    <Layout>
+    <>
       <Head>
         <title>Dashboard</title>
       </Head>
-    </Layout>
+      <Link href="/timer/create">
+        <a>Create</a>
+      </Link>
+    </>
   )
 }

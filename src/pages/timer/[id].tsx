@@ -1,24 +1,23 @@
 import Head from 'next/head'
 import { GetStaticProps, GetStaticPaths } from 'next'
 
-import { Timer } from "../../models";
-import Layout from '../../components/layout';
-import { dateDifference } from '../../lib/date';
-import { useEffect, useState } from 'react';
+import { Timer, getAllIds as getAllTimerIds, findById as findTimerById } from "../../models/timer"
+import { dateDifference } from '../../lib/date'
+import { useEffect, useState } from 'react'
 
-export default function _Timer({ timer }: { timer: Timer.Timer }) {
-  timer.endTime = (typeof timer.endTime === "string") ? new Date(timer.endTime) : timer.endTime;
+export default function _Timer({ timer }: { timer: Timer }) {
+  timer.endTime = (typeof timer.endTime === "string") ? new Date(timer.endTime) : timer.endTime
   
-  const [diff, setDiff] = useState(dateDifference(timer.endTime, new Date()));
+  const [diff, setDiff] = useState(dateDifference(timer.endTime, new Date()))
   
   useEffect(() => {
-    console.log(timer);
+    console.log(timer)
     
     function reset() {
       setTimeout(() => {
-        timer.endTime = (typeof timer.endTime === "string") ? new Date(timer.endTime) : timer.endTime;
+        timer.endTime = (typeof timer.endTime === "string") ? new Date(timer.endTime) : timer.endTime
 
-        setDiff(dateDifference(timer.endTime, new Date()));
+        setDiff(dateDifference(timer.endTime, new Date()))
         reset();
       }, 1000);
     }
@@ -27,7 +26,7 @@ export default function _Timer({ timer }: { timer: Timer.Timer }) {
   }, []);
 
   return (
-    <Layout>
+    <>
       <Head>
         <title>{timer.title}</title>
       </Head>
@@ -46,13 +45,13 @@ export default function _Timer({ timer }: { timer: Timer.Timer }) {
           seconds: { diff.seconds }
         </div>
       </article>
-    </Layout>
-  );
+    </>
+  )
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const ids = await Timer.getAllIds();
-  const paths = ids.map(id => ({ params: { id: id.toString() } }));
+  const ids = await getAllTimerIds()
+  const paths = ids.map(id => ({ params: { id: id.toString() } }))
   return {
     paths,
     fallback: false
@@ -60,9 +59,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
 }
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const timer = await Timer.findById(params.id as string);
+  const timer = await findTimerById(params.id as string)
   if (timer.endTime instanceof Date) {
-    timer.endTime = timer.endTime.toISOString();
+    timer.endTime = timer.endTime.toISOString()
   }
   return {
     props: {
