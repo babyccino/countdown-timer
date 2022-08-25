@@ -11,7 +11,7 @@ export type Timer = Modify<
 >
 export { Visibility } from "@prisma/client"
 
-export const findById = async (id: string): Promise<Timer> => {
+export async function findById(id: string): Promise<Timer> {
 	const timer = await prisma.timer.findFirst({
 		where: {
 			id,
@@ -21,7 +21,7 @@ export const findById = async (id: string): Promise<Timer> => {
 	return timer
 }
 
-export const create = async (timer: Timer): Promise<Timer> => {
+export async function create(timer: Timer): Promise<Timer> {
 	// remove the id so SQL can create one itself
 	const newTimer = await prisma.timer.create({
 		data: { ...timer, id: undefined },
@@ -30,12 +30,12 @@ export const create = async (timer: Timer): Promise<Timer> => {
 	return newTimer
 }
 
-export const getAll = async (): Promise<Timer[]> => {
+export async function getAll(): Promise<Timer[]> {
 	const timers = await prisma.timer.findMany()
 	return timers
 }
 
-export const getAllIds = async (): Promise<string[]> => {
+export async function getAllIds(): Promise<string[]> {
 	const ids = await prisma.timer.findMany({
 		select: {
 			id: true,
