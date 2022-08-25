@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 
-import { create as createTimer } from "../../models/timer"
+import { create as createTimer, Visibility } from "../../models/timer"
 import authenticate from "../../lib/auth"
 
 export default async function _Timer(
@@ -29,6 +29,21 @@ export default async function _Timer(
 			visibility: string
 		} = req.body
 
+		const _visibility = req.body.visibility.toUpperCase()
+		if (
+			!(
+				_visibility === Visibility.HIDDEN ||
+				_visibility === Visibility.PUBLIC ||
+				_visibility === Visibility.PROTECTED
+			)
+		) {
+			throw {
+				status: 400,
+				message: 'Visibility must be "public", "hidden" or "protected"',
+			}
+		}
+		const visiblity: Visibility = _visibility as Visibility
+
 		if (title.length < 1 || title.length > 100) {
 			throw {
 				status: 400,
@@ -55,6 +70,7 @@ export default async function _Timer(
 			title,
 			userId,
 			endTime,
+			visiblity,
 		})
 
 		console.log({ newTimer })

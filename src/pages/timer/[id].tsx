@@ -1,13 +1,14 @@
+import { useEffect, useState } from 'react'
 import Head from 'next/head'
 import { GetStaticProps, GetStaticPaths } from 'next'
 
 import { Timer, getAllIds as getAllTimerIds, findById as findTimerById } from "../../models/timer"
 import { dateDifference } from '../../lib/date'
-import { useEffect, useState } from 'react'
+import DumbTimer from '../../components/dumbTimer'
 
 export default function _Timer({ timer }: { timer: Timer }) {
   timer.endTime = (typeof timer.endTime === "string") ? new Date(timer.endTime) : timer.endTime
-  
+
   const [diff, setDiff] = useState(dateDifference(timer.endTime, new Date()))
   
   useEffect(() => {
@@ -18,33 +19,18 @@ export default function _Timer({ timer }: { timer: Timer }) {
         timer.endTime = (typeof timer.endTime === "string") ? new Date(timer.endTime) : timer.endTime
 
         setDiff(dateDifference(timer.endTime, new Date()))
-        reset();
-      }, 1000);
+        reset()
+      }, 1000)
     }
-
-    reset();
-  }, []);
+    reset()
+  }, [])
 
   return (
     <>
       <Head>
-        <title>{timer.title}</title>
+        <title>Countdown timer | {timer.title}</title>
       </Head>
-      <article>
-        <h1>{timer.title}</h1>
-        <div id="days">
-          days: { diff.days }
-        </div>
-        <div id="hours">
-          hours: { diff.hours }
-        </div>
-        <div id="minutes">
-          minutes: { diff.minutes }
-        </div>
-        <div id="seconds">
-          seconds: { diff.seconds }
-        </div>
-      </article>
+      <DumbTimer diff={diff} title={timer.title} />
     </>
   )
 }

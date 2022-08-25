@@ -5,7 +5,11 @@ import type { Modify } from "../lib/util"
 
 // The id will not always be required, ex: when creating a user
 // NextJs doesn't like the Date object with the getStaticProps function
-export type Timer = Modify<PrismaTimer, { id?: string; endTime: Date | string }>
+export type Timer = Modify<
+	PrismaTimer,
+	{ id?: string; password?: string; endTime: Date | string }
+>
+export { Visibility } from "@prisma/client"
 
 export const findById = async (id: string): Promise<Timer> => {
 	const timer = await prisma.timer.findFirst({
