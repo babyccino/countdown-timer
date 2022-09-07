@@ -5,12 +5,13 @@ import { setCookie } from "cookies-next"
 import passport from "../../../lib/passport"
 
 export default function Callback(req: NextApiRequest, res: NextApiResponse) {
-	passport.authenticate("google", (err, user, info) => {
-		if (err || !user) {
+	passport.authenticate("google", (error, user, info) => {
+		if (error || !user) {
 			return res.status(404).redirect("/?a=auth_fail")
 		}
 
 		// set cookie and send redirect
+		console.log("setting cookie user")
 		setCookie("user", JSON.stringify(user), { req, res, maxAge: 60 * 60 * 8 })
 		setCookie("token", info.token, { req, res, maxAge: 60 * 60 * 8 })
 

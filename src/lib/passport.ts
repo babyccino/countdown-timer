@@ -31,9 +31,9 @@ passport.use(
 					message: "Auth successful",
 					token,
 				} as any)
-			} catch (err) {
-				console.error(err)
-				done(err, false, { message: "Internal server error" })
+			} catch (error) {
+				console.error(error)
+				done(error, false, { message: "Internal server error" })
 			}
 		}
 	)

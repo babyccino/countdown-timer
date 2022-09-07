@@ -42,7 +42,13 @@ function getGreatestDateDiff(diff: DateDifference): [string, number] {
   return ["seconds", diff.seconds]
 }
 
-const TimerInner = memo(({ diff, preview }: { diff: DateDifference, preview: boolean }): JSX.Element => {
+const TimerInner = memo(function TimerInner_({
+  diff,
+  preview
+}: {
+  diff: DateDifference,
+  preview: boolean
+}): JSX.Element {
   const previewString = preview ? "preview" : "full"
 
   if (diff.sign) {
@@ -68,7 +74,17 @@ const TimerInner = memo(({ diff, preview }: { diff: DateDifference, preview: boo
   )
 })
 
-const Timer = memo(({title, id, diff: _diff, preview = false}: {title: string, id: string, diff: DateDifference, preview: boolean}): JSX.Element => {
+const Timer = memo(function Timer_({
+  title,
+  id,
+  diff: _diff,
+  preview = false
+}: {
+  title: string,
+  id: string,
+  diff: DateDifference,
+  preview: boolean
+}): JSX.Element {
   const [diff, setDiff] = useState(_diff)
 
 	useEffect(() => {

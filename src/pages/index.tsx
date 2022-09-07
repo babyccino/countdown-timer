@@ -10,6 +10,18 @@ import { useAtPageBottom } from "../lib/hooks"
 
 import Timer from "../components/timer"
 
+function timerMapCallbackWithKeyOffset(keyOffset: number) {
+  return function TimerMapCallback({ title, endTime, id }: TimerLite, index: number): JSX.Element {
+    const diff = dateDifference(new Date(endTime))
+    const props = {title, diff, id}
+    return (
+      <div key={index + keyOffset}>
+        <Timer {...props} preview />
+      </div>
+    )
+  }
+} 
+
 export default function Index({ timers, offset }: {timers: TimerLite[], offset: string}): JSX.Element {
   const [newTimers, setNewTimers] = useState<TimerLite[]>([])
   const loadingTimers = useRef(false);
@@ -33,24 +45,14 @@ export default function Index({ timers, offset }: {timers: TimerLite[], offset: 
     })
   }, 10, [newTimers])
 
-  const mapTimerToComponent = (keyOffset: number = 0) => (({ title, endTime, id }: TimerLite, index: number): JSX.Element => {
-    const diff = dateDifference(new Date(endTime))
-    const props = {title, diff, id}
-    return (
-      <div key={index + keyOffset}>
-        <Timer {...props} preview />
-      </div>
-    )
-  })
-
   return (
     <>
       <Head>
         <title>Dashboard</title>
       </Head>
       <div className="w-full md:grid grid-cols-3 gap-6 px-4 md:px-8 pt-6">
-        {timers.map(mapTimerToComponent())}
-        {newTimers.map(mapTimerToComponent(9))}
+        {timers.map(timerMapCallbackWithKeyOffset(0))}
+        {newTimers.map(timerMapCallbackWithKeyOffset(9))}
       </div>
     </>
   )

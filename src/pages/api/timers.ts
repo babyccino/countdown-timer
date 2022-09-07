@@ -100,7 +100,6 @@ export default async function Timer(
 ): Promise<void> {
 	try {
 		const method = req.method.toLowerCase()
-
 		if (method === "post") return postTimer(req, res)
 		if (method === "get") return getTimers(req, res)
 
@@ -109,7 +108,7 @@ export default async function Timer(
 			message: "/api/timers only takes get or post requests",
 		}
 	} catch (error) {
-		console.error(error.message)
-		return res.status(error.status ? error.status : 500).json(error.message)
+		console.error(error)
+		return res.status(error.status || 500).json(error.message)
 	}
 }

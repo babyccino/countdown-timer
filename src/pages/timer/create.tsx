@@ -12,7 +12,7 @@ function Error(): JSX.Element {
       <div className="error fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-l text-red-900 bg-red-100 p-2 border rounded border-red-900">
       There was a server error creating a new post<br />Try reloading the page and trying again
       </div>
-      <style jsx>{`
+      <style jsx={true}>{`
         .error {
           animation: appearDisappear 5s ease 0s 1 forwards
         }
@@ -75,7 +75,6 @@ export default function Create() {
     <>
       <Head>
         <title>Create a timer</title>
-        <meta name="description" content="Create an online timer you can share with your friends!" />
       </Head>
       <div className="flex-1 md:grid md:grid-cols-3 md:gap-6 py-3 md:px-4 min-h-full min-w-full">
         <div className="md:col-span-1 p-4">
