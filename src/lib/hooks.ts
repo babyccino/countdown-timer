@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 import useSWR from "swr"
 import axios from "axios"
@@ -14,11 +14,11 @@ export function useUser() {
 		mutate: mutateUser,
 		error,
 	} = useSWR("/api/user", fetcher, {
-		onErrorRetry(error, key, config, revalidate, { retryCount }) {
+		onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
 			// never retry on 401
 			if (error.response.status === 401) return
 
-			console.log(error)
+			console.error(error)
 
 			// Only retry up to 10 times.
 			if (retryCount >= 10) return
@@ -28,23 +28,24 @@ export function useUser() {
 		},
 		revalidateOnFocus: false,
 	})
-	const swrUser: User = data
+	const cloudUser: User = data
 
-	let cookieUser: User
+	const [cookieUser, setCookieUser] = useState<User>(null)
 	useEffect(() => {
 		const cookie = getCookie("user")
 		if (cookie) {
-			cookieUser = JSON.parse(cookie.toString()) as User
+			const cookieUser = JSON.parse(cookie.toString()) as User
+			setCookieUser(cookieUser)
 		}
 	}, [])
 
-	return { user: swrUser || cookieUser, mutateUser, error }
+	return { user: cloudUser || cookieUser, mutateUser, error }
 }
 
 export function useAtPageBottom(
 	cb: (offset?: number) => void,
 	offset: number = 0,
-	dependencies: any
+	dependencies: any[]
 ): void {
 	useEffect(() => {
 		const scrollListener = () => {
@@ -59,5 +60,5 @@ export function useAtPageBottom(
 
 		window.addEventListener("scroll", scrollListener)
 		return () => window.removeEventListener("scroll", scrollListener) // clean up
-	}, dependencies)
+	}, [cb, offset, ...dependencies])
 }

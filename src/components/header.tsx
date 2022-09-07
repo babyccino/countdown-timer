@@ -14,6 +14,7 @@ function User(): JSX.Element {
   const href = `/api/google?redirect=${router.pathname}`
   const logout = () => {
     deleteCookie("token")
+    deleteCookie("user")
     mutateUser({})
     router.replace("/")
   }
@@ -51,7 +52,7 @@ export default function Header(): JSX.Element {
         <div className="flex flex-row justify-between items-center border-b-2 py-2 border-gray-100 md:px-2 md:justify-start md:space-x-10">
           <Link href="/" className="flex justify-start">
             <a>
-              <Image src="/logo.webp" height="70px" width="70px"/> 
+              <Image src="/logo.webp" alt="logo" height="70px" width="70px"/> 
             </a>
           </Link>
           <div className="flex flex-row flex-1 items-center justify-end lg:w-0">
