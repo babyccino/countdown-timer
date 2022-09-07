@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import Head from 'next/head'
 import { GetStaticProps, GetStaticPaths } from 'next'
 
@@ -6,24 +5,8 @@ import { getAllIds as getAllTimerIds, findByIdSelect as findTimerById, TimerLite
 import { dateDifference } from '../../lib/date'
 import Timer from '../../components/timer'
 
-export default function _Timer({ timer }: { timer: TimerLite }) {
+export default function TimerPage({ timer }: { timer: TimerLite }) {
   timer.endTime = (typeof timer.endTime === "string") ? new Date(timer.endTime) : timer.endTime
-
-  const [diff, setDiff] = useState(dateDifference(timer.endTime))
-  
-  useEffect(() => {
-    console.log(timer)
-    
-    function reset() {
-      setTimeout(() => {
-        timer.endTime = (typeof timer.endTime === "string") ? new Date(timer.endTime) : timer.endTime
-
-        setDiff(dateDifference(timer.endTime))
-        reset()
-      }, 1000)
-    }
-    reset()
-  }, [])
 
   const title = `Countdown timer | ${timer.title}` 
 
@@ -32,7 +15,7 @@ export default function _Timer({ timer }: { timer: TimerLite }) {
       <Head>
         <title>{title}</title>
       </Head>
-      <Timer diff={diff} title={timer.title} id={timer.id} preview={false}/>
+      <Timer diff={dateDifference(timer.endTime)} title={timer.title} id={timer.id} preview={false}/>
     </>
   )
 }
