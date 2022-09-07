@@ -6,7 +6,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest --watch"
+    "test": "jest --watch",
+    "vercel-build": "prisma generate && prisma migrate deploy && next build",
+    "prisma:generate": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^4.2.1",
