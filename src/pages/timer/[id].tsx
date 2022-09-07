@@ -2,14 +2,14 @@ import { useEffect, useState } from 'react'
 import Head from 'next/head'
 import { GetStaticProps, GetStaticPaths } from 'next'
 
-import { Timer, getAllIds as getAllTimerIds, findById as findTimerById } from "../../models/timer"
+import { getAllIds as getAllTimerIds, findByIdSelect as findTimerById, TimerLite } from "../../models/timer"
 import { dateDifference } from '../../lib/date'
-import DumbTimer from '../../components/dumbTimer'
+import Timer from '../../components/timer'
 
-export default function _Timer({ timer }: { timer: Timer }) {
+export default function _Timer({ timer }: { timer: TimerLite }) {
   timer.endTime = (typeof timer.endTime === "string") ? new Date(timer.endTime) : timer.endTime
 
-  const [diff, setDiff] = useState(dateDifference(timer.endTime, new Date()))
+  const [diff, setDiff] = useState(dateDifference(timer.endTime))
   
   useEffect(() => {
     console.log(timer)
@@ -18,19 +18,21 @@ export default function _Timer({ timer }: { timer: Timer }) {
       setTimeout(() => {
         timer.endTime = (typeof timer.endTime === "string") ? new Date(timer.endTime) : timer.endTime
 
-        setDiff(dateDifference(timer.endTime, new Date()))
+        setDiff(dateDifference(timer.endTime))
         reset()
       }, 1000)
     }
     reset()
   }, [])
 
+  const title = `Countdown timer | ${timer.title}` 
+
   return (
     <>
       <Head>
-        <title>Countdown timer | {timer.title}</title>
+        <title>{title}</title>
       </Head>
-      <DumbTimer diff={diff} title={timer.title} />
+      <Timer diff={diff} title={timer.title} id={timer.id} preview={false}/>
     </>
   )
 }
@@ -38,6 +40,7 @@ export default function _Timer({ timer }: { timer: Timer }) {
 export const getStaticPaths: GetStaticPaths = async () => {
   const ids = await getAllTimerIds()
   const paths = ids.map(id => ({ params: { id: id.toString() } }))
+
   return {
     paths,
     fallback: false
@@ -49,6 +52,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   if (timer.endTime instanceof Date) {
     timer.endTime = timer.endTime.toISOString()
   }
+
   return {
     props: {
       timer,

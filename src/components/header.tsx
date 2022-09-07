@@ -29,7 +29,7 @@ function User(): JSX.Element {
         >Logout</a>
         <div style={{borderRadius: "50%", boxShadow: "0 0 12px -1px rgba(0,0,0,0.9)"}} className="fixed w-14 h-14 text-center bottom-4 right-4 text-6xl bg-indigo-600 ">
           <Link href="/timer/create">
-              <a style={{bottom: "0.6rem"}} className="relative block bottom-2 text-gray-100">+</a>
+            <a style={{bottom: "0.6rem"}} className="relative block bottom-2 text-gray-100">+</a>
           </Link>
         </div>
       </>

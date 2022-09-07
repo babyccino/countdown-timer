@@ -1,26 +1,10 @@
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 import { FormEventHandler, useState } from 'react' 
 
 import axios from "axios"
-import { useRouter } from 'next/router'
 
-function htmlMinDateFormat(dateTime: Date): string {
-  const year = dateTime.getUTCFullYear()
-  const _month = dateTime.getUTCMonth() + 1
-  const month = (_month < 10 ? "0" : "") + _month
-  const _date = dateTime.getUTCDate()
-  const date = (_date < 10 ? "0" : "") + _date
-  const _hour = dateTime.getUTCHours()
-  const hour = (_hour < 10 ? "0" : "") + _hour
-  const _minute = dateTime.getUTCMinutes()
-  const minute = (_minute < 10 ? "0" : "") + _minute
-
-  return `${year}-${month}-${date}T${hour}:${minute}`
-}
-
-function getCurrentDateHtmlFormat(): string {
-  return htmlMinDateFormat(new Date())
-}
+import { getCurrentDateInHtmlFormat } from '../../lib/date'
 
 export default function Create() {
   const [visibility, setVisibility] = useState("Public")
@@ -93,7 +77,7 @@ export default function Create() {
                     type="datetime-local"
                     name="endDate"
                     id="endDate"
-                    min={getCurrentDateHtmlFormat()}
+                    min={getCurrentDateInHtmlFormat()}
                     required
                     // onChange={handleDateChange}
                     className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border shadow-sm border-gray-300 rounded-md p-2"
