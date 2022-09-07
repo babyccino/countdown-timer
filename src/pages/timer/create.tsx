@@ -6,11 +6,37 @@ import axios from "axios"
 
 import { getCurrentDateInHtmlFormat } from '../../lib/date'
 
+function Error(): JSX.Element {
+  return (
+    <>
+      <div className="error fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center text-l text-red-900 bg-red-100 p-2 border rounded border-red-900">
+      There was a server error creating a new post<br />Try reloading the page and trying again
+      </div>
+      <style jsx>{`
+        .error {
+          animation: appearDisappear 5s ease 0s 1 forwards
+        }
+
+        @keyframes appearDisappear {
+          0% { z-index: 100; opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          99% { z-index: 100; opacity: 0; }
+          100% { z-index: -10; opacity: 0; }
+        }
+      `}</style>
+    </>
+  )
+}
+
 export default function Create() {
   const [visibility, setVisibility] = useState("Public")
+  const [postError, setPostError] = useState(false)
   const router = useRouter();
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
+    setPostError(false)
+
     event.preventDefault()
 
     const form = event.currentTarget
@@ -32,10 +58,17 @@ export default function Create() {
       password,
     }
 
-    const { data: returnData } = (await axios.post("/api/timer", data))
-    console.log({returnData})
-    
-    router.push(returnData.redirect)
+    try {
+      const res = await axios.post("/api/timers", data)
+      const returnData = res.data
+      console.log({returnData})
+      
+      router.push(returnData.redirect)
+    } catch(error) {
+      setPostError(true)
+
+      console.error(error)
+    }
   }
 
   return (
@@ -63,7 +96,7 @@ export default function Create() {
                     id="title"
                     name="title"
                     required
-                    // pattern="[a-z0-9]{1-100}"
+                    pattern="[\w\s]+"
                     minLength={1}
                     maxLength={100}
                     title="Titles must be alphanumeric and between 1 and 100 characters long"
@@ -125,6 +158,7 @@ export default function Create() {
           </form>
         </div>
       </div>
+      { postError && <Error /> }
     </>
   )
 }

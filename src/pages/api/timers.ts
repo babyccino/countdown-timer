@@ -53,7 +53,7 @@ async function postTimer(
 			message: "Title length must be between 1 and 100 characters",
 		}
 	}
-	if (!/^\w+$/.test(title)) {
+	if (!/^[\w\s]+$/.test(title)) {
 		throw {
 			status: 400,
 			message: "Title only contain alphanumeric characters",
