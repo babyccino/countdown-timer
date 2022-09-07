@@ -35,7 +35,14 @@ const STYLING = {
   },
 }
 
-function TimerInner ({ diff, preview }: { diff: DateDifference, preview: boolean }): JSX.Element {
+function getGreatestDateDiff(diff: DateDifference): [string, number] {
+  if (diff.days > 0) return ["days", diff.days]
+  if (diff.hours > 0) return ["hours", diff.hours]
+  if (diff.minutes > 0) return ["minutes", diff.minutes]
+  return ["seconds", diff.seconds]
+}
+
+const TimerInner = memo(({ diff, preview }: { diff: DateDifference, preview: boolean }): JSX.Element => {
   const previewString = preview ? "preview" : "full"
 
   if (diff.sign) {
@@ -53,21 +60,15 @@ function TimerInner ({ diff, preview }: { diff: DateDifference, preview: boolean
     )
   }
 
-  const [category, value] = (() => {
-    if (diff.days > 0) return ["days", diff.days]
-    if (diff.hours > 0) return ["hours", diff.hours]
-    if (diff.minutes > 0) return ["minutes", diff.minutes]
-    return ["seconds", diff.seconds]
-  })()
-
+  const [category, value] = getGreatestDateDiff(diff)
   return (
     <div className={ STYLING.finishedInnerContainer[previewString] }>
       {`Finished ${value} ${category} ago`}
     </div>
   )
-}
+})
 
-function _Timer({title, id, diff: _diff, preview = false}: {title: string, id: string, diff: DateDifference, preview: boolean}): JSX.Element {
+const Timer = memo(({title, id, diff: _diff, preview = false}: {title: string, id: string, diff: DateDifference, preview: boolean}): JSX.Element => {
   const [diff, setDiff] = useState(_diff)
 
 	useEffect(() => {
@@ -89,7 +90,6 @@ function _Timer({title, id, diff: _diff, preview = false}: {title: string, id: s
       <TimerInner diff={diff} preview={preview} />
     </article>
   )
-}
-const Timer = memo(_Timer)
+})
 
 export default Timer
