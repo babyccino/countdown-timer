@@ -11,24 +11,18 @@ async function postTimer(
 	req: NextApiRequest,
 	res: NextApiResponse
 ): Promise<void> {
-	if (req.method.toLowerCase() != "post") {
-		throw { status: 405, message: "/api/timer only takes post requests" }
-	}
-
 	const userId = authenticate(req, res)
 	if (!userId) {
 		throw { status: 401, message: "Unauthorised" }
 	}
 
-	console.log(req.body)
+	console.log("Create post request received: ", { body: req.body })
 	const {
 		title,
 		endDate: endDateString,
-		endTime: endTimeString,
 	}: {
 		title: string
 		endDate: string
-		endTime: string
 		visibility: string
 	} = req.body
 
@@ -61,7 +55,7 @@ async function postTimer(
 	}
 
 	// if time is specified, this time will be an ISO format string
-	const endTime = new Date(endTimeString || endDateString)
+	const endTime = new Date(endDateString)
 	if (endTime.toUTCString() === "Invalid Date") {
 		throw { status: 400, message: "Date not parsable" }
 	}
@@ -76,7 +70,7 @@ async function postTimer(
 		visiblity,
 	})
 
-	console.log({ newTimer })
+	console.log("New timer created: ", { newTimer })
 	const path = `/timer/${newTimer.id}`
 	await res.revalidate(path)
 	res.status(200).json({ newTimer, redirect: path })
@@ -86,7 +80,9 @@ async function getTimers(
 	req: NextApiRequest,
 	res: NextApiResponse
 ): Promise<void> {
-	console.log({ offset: new Date(req.query.offset as string) })
+	console.log("Get timers request received: ", {
+		offset: new Date(req.query.offset as string),
+	})
 
 	const timers = req.query.offset
 		? await getRecentPublic(new Date(req.query.offset as string))
@@ -109,6 +105,6 @@ export default async function Timer(
 		}
 	} catch (error) {
 		console.error(error)
-		return res.status(error.status || 500).json(error.message)
+		return res.status(error.status || 500).json(error)
 	}
 }

@@ -60,7 +60,7 @@ export default function Index({ timers, offset }: {timers: TimerLite[], offset: 
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const timers = await getRecentPublic()
-  const offset = (timers[timers.length - 1].endTime as Date).toISOString()
+  const offset = (timers.length > 0 ? (timers[timers.length - 1].endTime as Date) : new Date(0)).toISOString()
   
   return {
     props: {
