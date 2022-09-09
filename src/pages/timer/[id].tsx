@@ -6,16 +6,13 @@ import { dateDifference } from '../../lib/date'
 import Timer from '../../components/timer'
 
 export default function TimerPage({ timer }: { timer: TimerLite }) {
-  timer.endTime = (typeof timer.endTime === "string") ? new Date(timer.endTime) : timer.endTime
-
-  const title = `Countdown timer | ${timer.title}` 
-
+  const diff = dateDifference(new Date(timer.endTime as string))
   return (
     <>
       <Head>
-        <title>{title}</title>
+        <title>{`Countdown timer | ${timer.title}`}</title>
       </Head>
-      <Timer diff={dateDifference(timer.endTime)} title={timer.title} id={timer.id} preview={false}/>
+      <Timer diff={diff} title={timer.title} id={timer.id} preview={false}/>
     </>
   )
 }

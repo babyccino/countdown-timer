@@ -14,8 +14,8 @@ export type Timer = Modify<
 		createdAt?: Date | string
 	}
 >
-export { Visibility } from "@prisma/client"
 export type TimerLite = Pick<Timer, "id" | "title" | "endTime">
+export { Visibility } from "@prisma/client"
 
 export async function findById(id: string): Promise<Timer> {
 	const timer = await prisma.timer.findFirst({
@@ -27,14 +27,13 @@ export async function findById(id: string): Promise<Timer> {
 	return timer
 }
 
-export async function findByIdSelect(
-	id: string
-): Promise<{ title: string; endTime: Date | string }> {
+export async function findByIdSelect(id: string): Promise<TimerLite> {
 	const timer = await prisma.timer.findFirst({
 		where: {
 			id,
 		},
 		select: {
+			id: true,
 			endTime: true,
 			title: true,
 		},
@@ -43,10 +42,15 @@ export async function findByIdSelect(
 	return timer
 }
 
-export async function create(timer: Timer): Promise<Timer> {
+export async function create(timer: Timer): Promise<TimerLite> {
 	// remove the id so SQL can create one itself
 	const newTimer = await prisma.timer.create({
 		data: { ...timer, id: undefined, createdAt: undefined },
+		select: {
+			id: true,
+			endTime: true,
+			title: true,
+		},
 	})
 
 	return newTimer
