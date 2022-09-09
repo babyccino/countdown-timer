@@ -8,7 +8,7 @@ export default function Loading(): JSX.Element {
       radius="48"
       color="#4F46E5"
       ariaLabel="watch-loading"
-      wrapperClass="fixed top-1/2 left-1/2 z-10"
+      wrapperClass="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10"
       visible={true}
     />
   )

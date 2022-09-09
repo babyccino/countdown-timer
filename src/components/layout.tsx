@@ -2,7 +2,6 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 
-
 import Header from './header'
 import Loading from './loading'
 
@@ -24,7 +23,8 @@ export default function Layout({ children }) {
       router.events.off('routeChangeComplete', handleComplete)
       router.events.off('routeChangeError', handleComplete)
     }
-  })
+  }, [ router ])
+
   return (
     <>
       <Head>
