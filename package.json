@@ -5,6 +5,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "redeploy": "next build && next start",
     "lint": "next lint",
     "test": "jest --watch",
     "vercel-build": "prisma generate && prisma migrate deploy && next build",
@@ -16,6 +17,7 @@
     "@types/passport": "^1.0.10",
     "@types/passport-google-oauth2": "^0.1.5",
     "@types/react": "^18.0.17",
+    "@types/react-loader-spinner": "^4.0.0",
     "@types/sequelize": "^4.28.14",
     "axios": "^0.27.2",
     "cookies-next": "^2.0.4",
@@ -28,6 +30,7 @@
     "prisma": "^4.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-loader-spinner": "^5.3.4",
     "sharp": "^0.31.0",
     "swr": "^1.3.0"
   },

@@ -5,6 +5,7 @@ import { FormEventHandler, useState } from 'react'
 import axios from "axios"
 
 import { getCurrentDateInHtmlFormat } from '../../lib/date'
+import Loading from '../../components/loading'
 
 function Error(): JSX.Element {
   return (
@@ -32,43 +33,42 @@ function Error(): JSX.Element {
 export default function Create() {
   const [visibility, setVisibility] = useState("Public")
   const [postError, setPostError] = useState(false)
+  const [loading, setLoading] = useState(false)
   const router = useRouter();
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     setPostError(false)
-
-    event.preventDefault()
-
-    const form = event.currentTarget
-    const formElements = form.elements as (typeof form.elements & {
-      title: HTMLInputElement,
-      endDate: HTMLInputElement,
-      visibility: HTMLInputElement,
-      password?: HTMLInputElement,
-    })
-    const title = formElements.title.value
-    const endDate = formElements.endDate.value
-    const visibility = formElements.visibility.value
-    const password = formElements.password?.value
-
-    const data = {
-      title,
-      endDate,
-      visibility,
-      password,
-    }
+    setLoading(true)
 
     try {
+      event.preventDefault()
+
+      const form = event.currentTarget
+      const formElements = form.elements as (typeof form.elements & {
+        title: HTMLInputElement,
+        endDate: HTMLInputElement,
+        visibility: HTMLInputElement,
+        password?: HTMLInputElement,
+      })
+
+      const data = {
+        title: formElements.title.value,
+        endDate: formElements.endDate.value,
+        visibility: formElements.visibility.value,
+        password: formElements.password?.value,
+      }
+
       const res = await axios.post("/api/timers", data)
       const returnData = res.data
-      console.log({returnData})
+      console.log("returnData: ", returnData)
       
       router.push(returnData.redirect)
     } catch(error) {
       setPostError(true)
-
       console.error(error)
     }
+
+    setLoading(false)
   }
 
   return (
@@ -76,7 +76,8 @@ export default function Create() {
       <Head>
         <title>Create a timer</title>
       </Head>
-      <div className="flex-1 md:grid md:grid-cols-3 md:gap-6 py-3 md:px-4 min-h-full min-w-full">
+      { loading && <Loading /> }
+      <div className={"flex-1 md:grid md:grid-cols-3 md:gap-6 py-3 md:px-4 min-h-full min-w-full " + (loading ? "blur" : "")}>
         <div className="md:col-span-1 p-4">
           <div className="px-4 sm:px-0">
             <h3 className="text-lg font-medium leading-6 text-gray-900">Create a countdown timer</h3>
@@ -130,7 +131,8 @@ export default function Create() {
                   </select>
                 </div>
 
-                { 
+                {/* { 
+                  // Todo: add pw
                   visibility === "Protected"
                     &&
                   <div className="col-span-6 sm:col-span-3">
@@ -148,7 +150,7 @@ export default function Create() {
                       className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border shadow-sm border-gray-300 rounded-md p-2"
                     />
                   </div>
-                }
+                } */}
               </div>
             </div>
             <div className="px-2 py-3 text-right sm:px-6">
