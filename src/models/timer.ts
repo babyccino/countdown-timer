@@ -9,7 +9,7 @@ export type Timer = Modify<
 	PrismaTimer,
 	{
 		id?: string
-		password?: string
+		password?: string | null
 		endTime: Date | string
 		createdAt?: Date | string
 	}
@@ -17,8 +17,8 @@ export type Timer = Modify<
 export type TimerLite = Pick<Timer, "id" | "title" | "endTime">
 export { Visibility } from "@prisma/client"
 
-export async function findById(id: string): Promise<Timer> {
-	const timer = await prisma.timer.findFirst({
+export async function findById(id: string): Promise<Timer | null> {
+	const timer: Timer | null = await prisma.timer.findFirst({
 		where: {
 			id,
 		},
@@ -27,7 +27,7 @@ export async function findById(id: string): Promise<Timer> {
 	return timer
 }
 
-export async function findByIdSelect(id: string): Promise<TimerLite> {
+export async function findByIdSelect(id: string): Promise<TimerLite | null> {
 	const timer = await prisma.timer.findFirst({
 		where: {
 			id,

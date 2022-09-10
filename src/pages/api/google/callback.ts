@@ -17,6 +17,6 @@ export default function Callback(req: NextApiRequest, res: NextApiResponse) {
 
 		// the original URL is passed to the api route in a query then passed to the google oauth via state
 		// this state is then passed back to the callback route as a query
-		res.status(200).redirect((req.query.state as string) || "/")
+		return res.status(200).redirect((req.query.state as string) || "/")
 	})(req, res)
 }

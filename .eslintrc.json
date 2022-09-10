@@ -1,6 +1,21 @@
 {
-  "extends": "next/core-web-vitals",
-  "rules": {
-    "react/no-unknown-property": ["error", { "ignore": ["jsx"] }]
-  }
+	"extends": [
+		"plugin:react/recommended",
+		"standard-with-typescript",
+		"google",
+		"prettier"
+	],
+	"rules": {
+		"react/no-unknown-property": ["error", { "ignore": ["jsx"] }]
+	},
+	"env": {
+		"browser": true,
+		"es2021": true
+	},
+	"overrides": [],
+	"parserOptions": {
+		"ecmaVersion": "latest",
+		"sourceType": "module"
+	},
+	"plugins": ["react"]
 }

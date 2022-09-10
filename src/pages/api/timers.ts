@@ -6,6 +6,7 @@ import {
 	Visibility,
 } from "../../models/timer"
 import authenticate from "../../lib/auth"
+import ServerError from "../../lib/error"
 
 async function postTimer(
 	req: NextApiRequest,
@@ -13,7 +14,7 @@ async function postTimer(
 ): Promise<void> {
 	const userId = authenticate(req, res)
 	if (!userId) {
-		throw { status: 401, message: "Unauthorised" }
+		throw new ServerError("Unauthorised", 401)
 	}
 
 	console.log("Create post request received: ", { body: req.body })
@@ -34,33 +35,30 @@ async function postTimer(
 			_visibility === Visibility.PROTECTED
 		)
 	) {
-		throw {
-			status: 400,
-			message: 'Visibility must be "public", "hidden" or "protected"',
-		}
+		throw new ServerError(
+			'Visibility must be "public", "hidden" or "protected"',
+			400
+		)
 	}
 	const visiblity: Visibility = _visibility as Visibility
 
 	if (title.length < 1 || title.length > 100) {
-		throw {
-			status: 400,
-			message: "Title length must be between 1 and 100 characters",
-		}
+		throw new ServerError(
+			"Title length must be between 1 and 100 characters",
+			400
+		)
 	}
 	if (!/^[\w\s]+$/.test(title)) {
-		throw {
-			status: 400,
-			message: "Title only contain alphanumeric characters",
-		}
+		throw new ServerError("Title only contain alphanumeric characters", 400)
 	}
 
 	// if time is specified, this time will be an ISO format string
 	const endTime = new Date(endDateString)
 	if (endTime.toUTCString() === "Invalid Date") {
-		throw { status: 400, message: "Date not parsable" }
+		throw new ServerError("Date not parsable", 400)
 	}
 	if (endTime.getTime() < new Date().getTime()) {
-		throw { status: 400, message: "End date must be in future" }
+		throw new ServerError("End date must be in future", 400)
 	}
 
 	const newTimer = await createTimer({
@@ -95,16 +93,13 @@ export default async function Timer(
 	res: NextApiResponse
 ): Promise<void> {
 	try {
-		const method = req.method.toLowerCase()
+		const method = req.method?.toLowerCase()
+		if (method === undefined || method === "get") return getTimers(req, res)
 		if (method === "post") return postTimer(req, res)
-		if (method === "get") return getTimers(req, res)
 
-		throw {
-			status: 405,
-			message: "/api/timers only takes get or post requests",
-		}
+		throw new ServerError("/api/timers only takes get or post requests", 405)
 	} catch (error) {
-		console.error(error)
-		return res.status(error.status || 500).json(error)
+		const status = error instanceof ServerError ? error.status : 500
+		return res.status(status).json(error)
 	}
 }

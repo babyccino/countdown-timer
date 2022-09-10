@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next"
 
 import { findById } from "../../models/user"
 import authenticate from "../../lib/auth"
+import ServerError from "../../lib/error"
 
 export default async function User(
 	req: NextApiRequest,
@@ -13,6 +14,7 @@ export default async function User(
 
 		return res.json({ ...user, id: undefined })
 	} catch (error) {
-		return res.status(error.status || 500).json(error.message)
+		const status = error instanceof ServerError ? error.status : 500
+		return res.status(status).json(error)
 	}
 }

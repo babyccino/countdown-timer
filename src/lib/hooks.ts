@@ -30,7 +30,7 @@ export function useUser() {
 	})
 	const cloudUser: User = data
 
-	const [cookieUser, setCookieUser] = useState<User>(null)
+	const [cookieUser, setCookieUser] = useState<User>()
 	useEffect(() => {
 		const cookie = getCookie("user")
 		if (cookie) {

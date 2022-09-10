@@ -7,7 +7,7 @@ import type { Optional } from "../lib/util"
 // and will not always be returned, ex: from an api request
 export type User = Optional<PrismaUser, "id">
 
-export async function findById(id: string): Promise<User> {
+export async function findById(id: string): Promise<User | null> {
 	const user = await prisma.user.findFirst({
 		where: {
 			id,
@@ -17,7 +17,7 @@ export async function findById(id: string): Promise<User> {
 	return user
 }
 
-export async function findByEmail(email: string): Promise<User> {
+export async function findByEmail(email: string): Promise<User | null> {
 	const user = await prisma.user.findFirst({
 		where: {
 			email,
