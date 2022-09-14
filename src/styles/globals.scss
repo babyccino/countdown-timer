@@ -21,14 +21,7 @@ a {
 	padding: 0;
 }
 
-div::selection,
-p::selection,
-a::selection,
-h1::selection,
-h2::selection,
-h3::selection,
-span::selection,
-br::selection {
+*::selection {
 	background: rgba(79, 70, 229, 0.26);
 }
 
@@ -41,7 +34,8 @@ br::selection {
 ::-webkit-scrollbar-thumb {
 	background: #888;
 	border-radius: 20px;
-}
-::-webkit-scrollbar-thumb:hover {
-	background: #555;
+
+	&:hover {
+		background: #555;
+	}
 }
