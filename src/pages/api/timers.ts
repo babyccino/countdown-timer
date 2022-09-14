@@ -48,9 +48,6 @@ async function postTimer(
 			400
 		)
 	}
-	if (!/^[\w\s]+$/.test(title)) {
-		throw new ServerError("Title only contain alphanumeric characters", 400)
-	}
 
 	// if time is specified, this time will be an ISO format string
 	const endTime = new Date(endDateString)

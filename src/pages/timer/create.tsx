@@ -127,7 +127,6 @@ export default function Create() {
 										id="title"
 										name="title"
 										required
-										pattern="[\w\s]+"
 										minLength={1}
 										maxLength={100}
 										title="Titles must be alphanumeric and between 1 and 100 characters long"
@@ -148,7 +147,6 @@ export default function Create() {
 										id="endDate"
 										min={getCurrentDateInHtmlFormat()}
 										required
-										// onChange={handleDateChange}
 										className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border shadow-sm border-gray-300 rounded-md p-2"
 									/>
 								</div>
@@ -168,7 +166,10 @@ export default function Create() {
 									>
 										<option>Public</option>
 										<option>Hidden</option>
-										<option>Protected</option>
+										{/*
+											// Todo: add pw
+											<option>Protected</option>
+										*/}
 									</select>
 								</div>
 
