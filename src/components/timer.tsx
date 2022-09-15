@@ -63,18 +63,26 @@ const TimerInner = memo(function TimerInner_({
 	if (diff.sign) {
 		return (
 			<div className={STYLING.notFinishedInnerContainer[previewString]}>
-				{dateDifferenceKeys.map((category, index) => (
-					<div
-						id="days"
-						className={STYLING.innerInnerContainer[previewString]}
-						key={index}
-					>
-						<div className={STYLING.diff[previewString]}>{diff[category]}</div>
-						<h2 className={STYLING.h2[previewString]}>
-							{capitalise(category)}
-						</h2>
-					</div>
-				))}
+				{dateDifferenceKeys.map((category, index) => {
+					// if category is plural remove "s" from the end of the category name
+					const formattedCategory =
+						diff[category] !== 1
+							? category
+							: category.substring(0, category.length - 1)
+
+					return (
+						<div
+							id="days"
+							className={STYLING.innerInnerContainer[previewString]}
+							key={index}
+						>
+							<div className={STYLING.diff[previewString]}>
+								{diff[category]}
+							</div>
+							<h2 className={STYLING.h2[previewString]}>{formattedCategory}</h2>
+						</div>
+					)
+				})}
 			</div>
 		)
 	}
