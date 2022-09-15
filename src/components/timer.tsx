@@ -37,6 +37,14 @@ const STYLING = {
 	},
 }
 
+const dateDifferenceKeys: (keyof DateDifference)[] = [
+	"days",
+	"hours",
+	"minutes",
+	"seconds",
+]
+
+// returns the greatest non-zero part of the difference
 function getGreatestDateDiff(diff: DateDifference): [string, number] {
 	if (diff.days > 0) return ["days", diff.days]
 	if (diff.hours > 0) return ["hours", diff.hours]
@@ -44,53 +52,51 @@ function getGreatestDateDiff(diff: DateDifference): [string, number] {
 	return ["seconds", diff.seconds]
 }
 
+function formatCategoryString(category: string, value: number): string {
+	// if value is plural remove "s" from the end of the category name
+	return capitalise(
+		value !== 1 ? category : category.substring(0, category.length - 1)
+	)
+}
+
 const TimerInner = memo(function TimerInner_({
-	diff,
+	dateDifference,
 	preview,
 }: {
-	diff: DateDifference
+	dateDifference: DateDifference
 	preview: boolean
 }): JSX.Element {
 	const previewString = preview ? "preview" : "full"
 
-	const dateDifferenceKeys: (keyof DateDifference)[] = [
-		"days",
-		"hours",
-		"minutes",
-		"seconds",
-	]
-
-	if (diff.sign) {
+	// if the dateDifference is positive then the timer has not finished
+	if (dateDifference.sign) {
 		return (
 			<div className={STYLING.notFinishedInnerContainer[previewString]}>
-				{dateDifferenceKeys.map((category, index) => {
-					// if category is plural remove "s" from the end of the category name
-					const formattedCategory =
-						diff[category] !== 1
-							? category
-							: category.substring(0, category.length - 1)
-
-					return (
-						<div
-							id="days"
-							className={STYLING.innerInnerContainer[previewString]}
-							key={index}
-						>
-							<div className={STYLING.diff[previewString]}>
-								{diff[category]}
-							</div>
-							<h2 className={STYLING.h2[previewString]}>{formattedCategory}</h2>
+				{dateDifferenceKeys.map((category, index) => (
+					<div
+						id="days"
+						className={STYLING.innerInnerContainer[previewString]}
+						key={index}
+					>
+						<div className={STYLING.diff[previewString]}>
+							{dateDifference[category]}
 						</div>
-					)
-				})}
+						<h2 className={STYLING.h2[previewString]}>
+							{formatCategoryString(
+								category,
+								dateDifference[category] as number
+							)}
+						</h2>
+					</div>
+				))}
 			</div>
 		)
 	}
 
-	const [category, value] = getGreatestDateDiff(diff)
+	const [category, value] = getGreatestDateDiff(dateDifference)
 	return (
 		<div className={STYLING.finishedInnerContainer[previewString]}>
-			{`Finished ${value} ${category} ago`}
+			{`Finished ${value} ${formatCategoryString(category, value)} ago`}
 		</div>
 	)
 })
@@ -128,7 +134,7 @@ const Timer = memo(function Timer_({
 					<h1 className={STYLING.h1[previewString]}>{title}</h1>
 				</a>
 			</Link>
-			<TimerInner diff={diff} preview={preview} />
+			<TimerInner dateDifference={diff} preview={preview} />
 		</article>
 	)
 })
