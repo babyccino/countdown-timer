@@ -32,17 +32,16 @@ function CreateButton(): JSX.Element {
 export default function Layout({ children }: { children: React.ReactNode }) {
 	const router = useRouter()
 	const { user, error, mutateUser } = useUser()
+	const [loading, setLoading] = useState(false)
 
 	// passing the redirect route to the API call
 	const href = `/api/google?redirect=${router.pathname}`
 	const logout = () => {
 		deleteCookie("token")
 		deleteCookie("user")
-		mutateUser({})
+		mutateUser(undefined)
 		router.replace("/")
 	}
-
-	const [loading, setLoading] = useState(false)
 
 	useEffect(() => {
 		const handleStart = (url: string) =>
@@ -52,7 +51,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 		router.events.on("routeChangeStart", handleStart)
 		router.events.on("routeChangeComplete", handleComplete)
 		router.events.on("routeChangeError", handleComplete)
-
 		return () => {
 			router.events.off("routeChangeStart", handleStart)
 			router.events.off("routeChangeComplete", handleComplete)
@@ -65,7 +63,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 			<Head>
 				<meta
 					name="description"
-					content="Create an online timer you can share with your friends!"
+					content="Create an online countdown timer you can share with your friends!"
 				/>
 			</Head>
 			<div className="min-h-screen flex justify-center">

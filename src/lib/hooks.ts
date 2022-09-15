@@ -1,22 +1,27 @@
 import { useEffect, useState } from "react"
 
-import useSWR from "swr"
-import axios from "axios"
+import useSWR, { KeyedMutator } from "swr"
+import axios, { AxiosError } from "axios"
 import { getCookie } from "cookies-next"
 
 import { User } from "../models/user"
 
-const fetcher = async (url: string) => (await axios.get(url)).data
+const fetcher = async (url: string): Promise<User> =>
+	(await axios.get<User>(url)).data
 
-export function useUser() {
+export function useUser(): {
+	user: User | undefined
+	mutateUser: KeyedMutator<User>
+	error: AxiosError<User> | undefined
+} {
 	const {
-		data,
+		data: cloudUser,
 		mutate: mutateUser,
 		error,
-	} = useSWR("/api/user", fetcher, {
+	} = useSWR<User, AxiosError<User>>("/api/user", fetcher, {
 		onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
 			// never retry on 401
-			if (error.response.status === 401) return
+			if (error?.response?.status === 401) return
 
 			console.error(error)
 
@@ -28,7 +33,6 @@ export function useUser() {
 		},
 		revalidateOnFocus: false,
 	})
-	const cloudUser: User = data
 
 	const [cookieUser, setCookieUser] = useState<User>()
 	useEffect(() => {
