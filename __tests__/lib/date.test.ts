@@ -1,5 +1,9 @@
 import type { DateDifference } from "../../src/lib/date"
-import { dateDifference, decrement } from "../../src/lib/date"
+import {
+	dateDifference,
+	decrement,
+	htmlMinDateFormat,
+} from "../../src/lib/date"
 
 describe("Date difference", () => {
 	it("Difference between two dates is correct", () => {
@@ -73,5 +77,11 @@ describe("Date difference", () => {
 			seconds: 0,
 			sign: false,
 		})
+	})
+
+	it("html date format", () => {
+		const epoch = new Date(0)
+
+		expect(htmlMinDateFormat(epoch)).toEqual("1970-01-01T00:00")
 	})
 })
