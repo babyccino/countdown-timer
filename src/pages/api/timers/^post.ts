@@ -1,14 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 
-import {
-	getRecentPublic,
-	create as createTimer,
-	Visibility,
-} from "../../models/timer"
-import authenticate from "../../lib/auth"
-import ServerError from "../../lib/error"
+import { create as createTimer, Visibility } from "../../../models/timer"
+import authenticate from "../../../lib/auth"
+import ServerError from "../../../lib/error"
 
-async function postTimer(
+export default async function postTimer(
 	req: NextApiRequest,
 	res: NextApiResponse
 ): Promise<void> {
@@ -69,34 +65,4 @@ async function postTimer(
 	const path = `/timer/${newTimer.id}`
 	await res.revalidate(path)
 	res.status(200).json({ newTimer, redirect: path })
-}
-
-async function getTimers(
-	req: NextApiRequest,
-	res: NextApiResponse
-): Promise<void> {
-	console.log("Get timers request received: ", {
-		offset: new Date(req.query.offset as string),
-	})
-
-	const timers = req.query.offset
-		? await getRecentPublic(new Date(req.query.offset as string))
-		: await getRecentPublic()
-	res.status(200).json({ timers })
-}
-
-export default async function Timer(
-	req: NextApiRequest,
-	res: NextApiResponse
-): Promise<void> {
-	try {
-		const method = req.method?.toLowerCase()
-		if (method === undefined || method === "get") return getTimers(req, res)
-		if (method === "post") return postTimer(req, res)
-
-		throw new ServerError("/api/timers only takes get or post requests", 405)
-	} catch (error) {
-		const status = error instanceof ServerError ? error.status : 500
-		return res.status(status).json(error)
-	}
 }
