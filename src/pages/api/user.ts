@@ -9,6 +9,10 @@ export default async function User(
 	res: NextApiResponse
 ): Promise<void> {
 	try {
+		if (req.method?.toLowerCase() !== "get") {
+			throw new ServerError("/api/user only takes get requests", 405)
+		}
+
 		const id = authenticate(req, res)
 		const user = await findById(id)
 
