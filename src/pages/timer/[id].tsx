@@ -33,7 +33,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 }
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-	console.log(`[Next.js] running getStaticProps on path ${params?.id}`)
+	console.log(`[Next.js] running getStaticProps on path /timer/${params?.id}`)
 	if (params === undefined || params.id === "undefined")
 		return { notFound: true }
 
