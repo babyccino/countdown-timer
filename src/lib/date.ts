@@ -1,3 +1,5 @@
+import { capitalise } from "./util"
+
 export interface DateDifference {
 	seconds: number
 	minutes: number
@@ -82,6 +84,33 @@ export function dateDifference(
 	return { seconds, minutes, hours, days, sign }
 }
 
+export const dateDifferenceKeys: (keyof DateDifference)[] = [
+	"days",
+	"hours",
+	"minutes",
+	"seconds",
+]
+
+// returns the greatest non-zero part of the difference
+export function getGreatestDateDiff(
+	diff: DateDifference
+): [keyof DateDifference, number] {
+	if (diff.days > 0) return ["days", diff.days]
+	if (diff.hours > 0) return ["hours", diff.hours]
+	if (diff.minutes > 0) return ["minutes", diff.minutes]
+	return ["seconds", diff.seconds]
+}
+
+export function formatCategoryString(
+	category: keyof DateDifference,
+	value: number
+): string {
+	// if value is plural remove "s" from the end of the category name
+	return capitalise(
+		value !== 1 ? category : category.substring(0, category.length - 1)
+	)
+}
+
 // the required format for the HTML date input element is YYYY-MM-DDThh-mm which is just the first 16 characters of the iso date
 const ISO_SLICE_INDEX = 16
 export function htmlMinDateFormat(dateTime: Date): string {
@@ -90,4 +119,8 @@ export function htmlMinDateFormat(dateTime: Date): string {
 
 export function getCurrentDateInHtmlFormat(): string {
 	return htmlMinDateFormat(new Date())
+}
+
+export function isValidDate(date: Date): boolean {
+	return !isNaN(date.getTime())
 }

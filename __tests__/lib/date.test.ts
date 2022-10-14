@@ -1,5 +1,6 @@
-import type { DateDifference } from "../../src/lib/date"
 import {
+	DateDifference,
+	isValidDate,
 	dateDifference,
 	decrement,
 	htmlMinDateFormat,
@@ -83,5 +84,10 @@ describe("Date difference", () => {
 		const epoch = new Date(0)
 
 		expect(htmlMinDateFormat(epoch)).toEqual("1970-01-01T00:00")
+	})
+
+	it("test invalid date", () => {
+		expect(isValidDate(new Date())).toBeTruthy()
+		expect(isValidDate(new Date("a"))).toBeFalsy()
 	})
 })
