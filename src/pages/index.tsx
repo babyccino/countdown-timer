@@ -1,68 +1,48 @@
+import { useMemo } from "react"
 import Head from "next/head"
-import { GetStaticProps } from "next"
-import { useRef, useState } from "react"
 
-import axios from "axios"
+import { makeGridWithFilters, FilterMap } from "../components/grid"
+import { getTimers } from "../lib/util"
 
-import { getRecentPublic, TimerLite } from "../models/timer"
-import { dateDifference } from "../lib/date"
-import { useAtPageBottom } from "../lib/hooks"
-
-import Timer from "../components/timer"
-
-function timerMapCallbackWithKeyOffset(keyOffset: number) {
-	return function TimerMapCallback(
-		{ title, endTime, id }: TimerLite,
-		index: number
-	): JSX.Element {
-		if (id === undefined) throw new Error("[Next.js] id undefined")
-
-		const diff = dateDifference(new Date(endTime))
-		const props = { title, diff, id }
-
-		return (
-			<div key={index + keyOffset}>
-				<Timer {...props} preview />
-			</div>
-		)
-	}
-}
+const getNewTimersByEndDate = (offset?: string): Promise<TimerLite[]> =>
+	getTimers({ sort: "enddate", offset })
+const initialFilter = "Default"
+const filterMap = new FilterMap([
+	[
+		initialFilter,
+		{
+			getNewTimers: getNewTimersByEndDate,
+			getTimerOffset: (timer: TimerLite): string =>
+				new Date(timer.endTime).toISOString(),
+		},
+	],
+	[
+		"End date",
+		{
+			getNewTimers: getNewTimersByEndDate,
+			getTimerOffset: (timer: TimerLite): string =>
+				new Date(timer.endTime).toISOString(),
+		},
+	],
+	[
+		"Created at",
+		{
+			getNewTimers: async (offset?: string): Promise<TimerLite[]> =>
+				getTimers({ sort: "created", offset }),
+			getTimerOffset: (timer: TimerLite): string =>
+				new Date(timer.createdAt).toISOString(),
+		},
+	],
+])
 
 export default function Index({
-	timers,
-	offset,
+	initialTimers,
 }: {
-	timers: TimerLite[]
-	offset: string
+	initialTimers: TimerLite[]
 }): JSX.Element {
-	const [newTimers, setNewTimers] = useState<TimerLite[]>([])
-	const loadingTimers = useRef(false)
-	const reachedEnd = useRef(false)
-
-	useAtPageBottom(
-		() => {
-			if (loadingTimers.current || reachedEnd.current) return
-
-			loadingTimers.current = true
-			const newOffset = newTimers.length
-				? new Date((newTimers.at(-1) as TimerLite).endTime).toISOString()
-				: offset
-			axios.get(`/api/timers?offset=${newOffset}`).then(({ data }) => {
-				console.log({ data })
-
-				if (data.timers.length !== 0) {
-					setNewTimers((prev: TimerLite[]) =>
-						prev.concat(data.timers as TimerLite[])
-					)
-				}
-
-				if (data.timers.length < 9) reachedEnd.current = true
-
-				loadingTimers.current = false
-			})
-		},
-		10,
-		[newTimers]
+	const Grid = useMemo(
+		() => makeGridWithFilters(filterMap, initialFilter, initialTimers),
+		[initialTimers]
 	)
 
 	return (
@@ -70,29 +50,29 @@ export default function Index({
 			<Head>
 				<title>Dashboard</title>
 			</Head>
-			<div className="w-full md:grid grid-cols-3 gap-6 px-4 md:px-8 pt-6">
-				{timers.map(timerMapCallbackWithKeyOffset(0))}
-				{newTimers.map(timerMapCallbackWithKeyOffset(9))}
-			</div>
+			<Grid />
 		</>
 	)
 }
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-	const timers = await getRecentPublic()
-	const offset = (
-		timers.length > 0
-			? (timers[timers.length - 1].endTime as Date)
-			: new Date(0)
-	).toISOString()
+// static props
+
+import { GetStaticProps } from "next"
+
+import { getByEndTime, TimerLite } from "../models/timer"
+
+const msInWeek = 1000 * 60 * 60 * 24 * 7
+export const getStaticProps: GetStaticProps = async () => {
+	const oneWeekAgo = new Date(Date.now() - msInWeek)
+	const timers = await getByEndTime(oneWeekAgo)
 
 	return {
 		props: {
-			timers: timers.map((timer) => ({
+			initialTimers: timers.map((timer) => ({
 				...timer,
 				endTime: (timer.endTime as Date).toISOString(),
+				createdAt: (timer.createdAt as Date).toISOString(),
 			})),
-			offset,
 		},
 		revalidate: 60,
 	}

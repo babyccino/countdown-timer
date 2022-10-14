@@ -1,11 +1,6 @@
 import prisma from "../db"
 import { User as PrismaUser } from "@prisma/client"
-
-import type { Optional } from "../lib/util"
-
-// The id will not always be required, ex: when creating a user
-// and will not always be returned, ex: from an api request
-export type User = Optional<PrismaUser, "id">
+export type User = PrismaUser
 
 export async function findById(id: string): Promise<User | null> {
 	const user = await prisma.user.findFirst({

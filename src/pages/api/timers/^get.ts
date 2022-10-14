@@ -1,17 +1,30 @@
 import type { NextApiRequest, NextApiResponse } from "next"
+import { isValidDate } from "../../../lib/date"
 
-import { getRecentPublic } from "../../../models/timer"
+import ServerError from "../../../lib/error"
+import { getByEndTime, getByTimeCreated } from "../../../models/timer"
 
 export default async function getTimers(
 	req: NextApiRequest,
 	res: NextApiResponse
 ): Promise<void> {
-	console.log("Get timers request received: ", {
-		offset: new Date(req.query.offset as string),
-	})
+	if (!req.query.sort || Array.isArray(req.query.sort))
+		throw new ServerError("Sort must be included and not an array", 400)
+	if (Array.isArray(req.query.offset))
+		throw new ServerError("Offset must not be an array", 400)
 
-	const timers = req.query.offset
-		? await getRecentPublic(new Date(req.query.offset as string))
-		: await getRecentPublic()
-	res.status(200).json({ timers })
+	const { sort } = req.query
+	const offset = req.query.offset ? new Date(req.query.offset) : undefined
+	if (offset && !isValidDate(offset))
+		throw new ServerError("Offset date is invalid", 400)
+
+	if (sort === "enddate") {
+		const timers = await getByEndTime(offset)
+		return res.status(200).json({ timers })
+	}
+
+	if (sort === "created") {
+		const timers = await getByTimeCreated(offset)
+		return res.status(200).json({ timers })
+	}
 }
