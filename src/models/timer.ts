@@ -41,16 +41,6 @@ export async function findByIdSelect(id: string): Promise<TimerLite | null> {
 	return timer
 }
 
-export async function findByUser(id: string): Promise<Timer | null> {
-	const timer: Timer | null = await prisma.timer.findFirst({
-		where: {
-			id,
-		},
-	})
-
-	return timer
-}
-
 export async function create(timer: Omit<Timer, "id">): Promise<TimerLite> {
 	// remove the id so SQL can create one itself
 	const newTimer = await prisma.timer.create({
@@ -103,6 +93,26 @@ export async function getByTimeCreated(
 			createdAt: {
 				gt: offsetDate,
 			},
+		},
+		select: timerLiteSelect,
+	})
+
+	return timers
+}
+
+export async function getFromUserByEndTime(
+	userId: string,
+	offsetDate?: Date
+): Promise<TimerLite[]> {
+	const timers = await prisma.timer.findMany({
+		take: POST_COUNT,
+		orderBy: { endTime: "asc" },
+		where: {
+			visiblity: Visibility.PUBLIC,
+			endTime: {
+				gt: offsetDate,
+			},
+			userId,
 		},
 		select: timerLiteSelect,
 	})
