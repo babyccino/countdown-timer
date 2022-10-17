@@ -25,6 +25,8 @@ export function makeQueryString(query: Query) {
 	}, "")
 }
 
-export async function getTimers(query: Query): Promise<TimerLite[]> {
+export async function getTimersFromApiServer(
+	query: Query
+): Promise<TimerLite[]> {
 	return (await axios.get(`/api/timers?${makeQueryString(query)}`)).data.timers
 }

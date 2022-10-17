@@ -2,10 +2,10 @@ import { useMemo } from "react"
 import Head from "next/head"
 
 import { makeGridWithFilters, FilterMap } from "../components/grid"
-import { getTimers } from "../lib/util"
+import { getTimersFromApiServer } from "../lib/util"
 
 const getNewTimersByEndDate = (offset?: string): Promise<TimerLite[]> =>
-	getTimers({ sort: "enddate", offset })
+	getTimersFromApiServer({ sort: "enddate", offset })
 const initialFilter = "Default"
 const filterMap = new FilterMap([
 	[
@@ -28,7 +28,7 @@ const filterMap = new FilterMap([
 		"Created at",
 		{
 			getNewTimers: async (offset?: string): Promise<TimerLite[]> =>
-				getTimers({ sort: "created", offset }),
+				getTimersFromApiServer({ sort: "created", offset }),
 			getTimerOffset: (timer: TimerLite): string =>
 				new Date(timer.createdAt).toISOString(),
 		},
