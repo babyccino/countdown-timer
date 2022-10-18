@@ -1,6 +1,6 @@
 import prisma from "../db"
 export { Visibility } from "@prisma/client"
-import { Timer, Visibility } from "@prisma/client"
+import { Timer, User, Visibility } from "@prisma/client"
 
 import type { Modify } from "../lib/util"
 
@@ -16,37 +16,25 @@ const timerLiteSelect = {
 	createdAt: true,
 }
 
-export async function findById(id: string): Promise<Timer | null> {
-	const timer: Timer | null = await prisma.timer.findFirst({
+export function findById(
+	id: string
+): Promise<(TimerLite & { user: User }) | null> {
+	return prisma.timer.findFirst({
 		where: {
 			id,
 		},
+		select: { ...timerLiteSelect, user: true },
 	})
-
-	return timer
 }
 
-export async function findByIdSelect(id: string): Promise<TimerLite | null> {
-	const timer = await prisma.timer.findFirst({
-		where: {
-			id,
-		},
-		select: timerLiteSelect,
-	})
-
-	return timer
-}
-
-export async function create(
+export function create(
 	timer: Pick<Timer, "title" | "endTime" | "visiblity" | "password" | "userId">
 ): Promise<TimerLite> {
 	// remove the id so SQL can create one itself
-	const newTimer = await prisma.timer.create({
+	return prisma.timer.create({
 		data: { ...timer, id: undefined, createdAt: undefined },
 		select: timerLiteSelect,
 	})
-
-	return newTimer
 }
 
 export function getAll(): Promise<Timer[]> {
@@ -64,8 +52,8 @@ export async function getAllIds(): Promise<string[]> {
 }
 
 const POST_COUNT = 9
-export async function getByEndTime(offsetDate?: Date): Promise<TimerLite[]> {
-	const timers = await prisma.timer.findMany({
+export function getByEndTime(offsetDate?: Date): Promise<TimerLite[]> {
+	return prisma.timer.findMany({
 		take: POST_COUNT,
 		orderBy: { endTime: "asc" },
 		where: {
@@ -76,14 +64,10 @@ export async function getByEndTime(offsetDate?: Date): Promise<TimerLite[]> {
 		},
 		select: timerLiteSelect,
 	})
-
-	return timers
 }
 
-export async function getByTimeCreated(
-	offsetDate?: Date
-): Promise<TimerLite[]> {
-	const timers = await prisma.timer.findMany({
+export function getByTimeCreated(offsetDate?: Date): Promise<TimerLite[]> {
+	return prisma.timer.findMany({
 		take: POST_COUNT,
 		orderBy: { createdAt: "asc" },
 		where: {
@@ -94,15 +78,13 @@ export async function getByTimeCreated(
 		},
 		select: timerLiteSelect,
 	})
-
-	return timers
 }
 
-export async function getFromUserByEndTime(
+export function getFromUserByEndTime(
 	userId: string,
 	offsetDate?: Date
 ): Promise<TimerLite[]> {
-	const timers = await prisma.timer.findMany({
+	return prisma.timer.findMany({
 		take: POST_COUNT,
 		orderBy: { endTime: "asc" },
 		where: {
@@ -114,15 +96,13 @@ export async function getFromUserByEndTime(
 		},
 		select: timerLiteSelect,
 	})
-
-	return timers
 }
 
-export async function getFromUserByTimeCreated(
+export function getFromUserByTimeCreated(
 	userId: string,
 	offsetDate?: Date
 ): Promise<TimerLite[]> {
-	const timers = await prisma.timer.findMany({
+	return prisma.timer.findMany({
 		take: POST_COUNT,
 		orderBy: { createdAt: "asc" },
 		where: {
@@ -134,6 +114,4 @@ export async function getFromUserByTimeCreated(
 		},
 		select: timerLiteSelect,
 	})
-
-	return timers
 }

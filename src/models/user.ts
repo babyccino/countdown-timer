@@ -1,15 +1,13 @@
 import prisma from "../db"
-import { User as PrismaUser } from "@prisma/client"
-export type User = PrismaUser
+import type { User } from "@prisma/client"
+export type { User } from "@prisma/client"
 
-export async function findById(id: string): Promise<User | null> {
-	const user = await prisma.user.findFirst({
+export function findById(id: string): Promise<User | null> {
+	return prisma.user.findFirst({
 		where: {
 			id,
 		},
 	})
-
-	return user
 }
 
 export async function getAllIds(): Promise<string[]> {
@@ -22,18 +20,16 @@ export async function getAllIds(): Promise<string[]> {
 	return ids.map(({ id }) => id)
 }
 
-export async function findByEmail(email: string): Promise<User | null> {
-	const user = await prisma.user.findFirst({
+export function findByEmail(email: string): Promise<User | null> {
+	return prisma.user.findFirst({
 		where: {
 			email,
 		},
 	})
-
-	return user
 }
 
-export async function findByEmailOrCreate(user: User): Promise<User> {
-	const newUser = await prisma.user.upsert({
+export function findByEmailOrCreate(user: User): Promise<User> {
+	return prisma.user.upsert({
 		where: {
 			email: user.email,
 		},
@@ -43,6 +39,4 @@ export async function findByEmailOrCreate(user: User): Promise<User> {
 			id: undefined,
 		},
 	})
-
-	return newUser
 }
