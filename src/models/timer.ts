@@ -1,18 +1,14 @@
 import prisma from "../db"
-import { Timer as PrismaTimer, Visibility } from "@prisma/client"
+export { Visibility } from "@prisma/client"
+import { Timer, Visibility } from "@prisma/client"
 
 import type { Modify } from "../lib/util"
 
-export type Timer = Modify<
-	PrismaTimer,
-	{
-		password?: string | null
-		endTime: Date | string
-		createdAt: Date | string
-	}
->
 export type TimerLite = Pick<Timer, "id" | "title" | "endTime" | "createdAt">
-export { Visibility } from "@prisma/client"
+export type SerialisedTimer = Modify<
+	TimerLite,
+	{ endTime: string; createdAt: string }
+>
 const timerLiteSelect = {
 	id: true,
 	endTime: true,

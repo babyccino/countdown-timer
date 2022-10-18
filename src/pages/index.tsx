@@ -1,6 +1,7 @@
 import { useMemo } from "react"
 import Head from "next/head"
 
+import type { TimerLite, SerialisedTimer } from "../models/timer"
 import { makeGridWithFilters, FilterMap } from "../components/grid"
 import { getTimersFromApiServer } from "../lib/util"
 
@@ -36,10 +37,11 @@ const filterMap = new FilterMap([
 ])
 
 export default function Index({
-	initialTimers,
+	serialisedTimers,
 }: {
-	initialTimers: TimerLite[]
+	serialisedTimers: SerialisedTimer[]
 }): JSX.Element {
+	const initialTimers = serialisedTimers.map(deSerialiseTimer)
 	const Grid = useMemo(
 		() => makeGridWithFilters(filterMap, initialFilter, initialTimers),
 		[initialTimers]
@@ -48,7 +50,7 @@ export default function Index({
 	return (
 		<>
 			<Head>
-				<title>Dashboard</title>
+				<title>Countdown Timers | Dashboard</title>
 			</Head>
 			<Grid />
 		</>
@@ -59,20 +61,23 @@ export default function Index({
 
 import { GetStaticProps } from "next"
 
-import { getByEndTime, TimerLite } from "../models/timer"
+import { serialiseTimer } from "../lib/serialise"
+import { getByEndTime } from "../models/timer"
+import { deSerialiseTimer } from "../lib/serialise"
 
 const msInWeek = 1000 * 60 * 60 * 24 * 7
 export const getStaticProps: GetStaticProps = async () => {
 	const oneWeekAgo = new Date(Date.now() - msInWeek)
-	const timers = await getByEndTime(oneWeekAgo)
+
+	// get timers which ended in the last week or haven't yet finished
+	const timersEndingSoon = await getByEndTime(oneWeekAgo)
+	// if there aren't enough to populate the dashboard just get timers from the start of time
+	const timers =
+		timersEndingSoon.length < 9 ? await getByEndTime() : timersEndingSoon
 
 	return {
 		props: {
-			initialTimers: timers.map((timer) => ({
-				...timer,
-				endTime: (timer.endTime as Date).toISOString(),
-				createdAt: (timer.createdAt as Date).toISOString(),
-			})),
+			serialisedTimers: timers.map(serialiseTimer),
 		},
 		revalidate: 60,
 	}
