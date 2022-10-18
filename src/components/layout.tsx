@@ -113,7 +113,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
 					{user && !error && <CreateButton />}
 
-					<main className={`flex-1 ${loading ? "blur" : ""}`}>{children}</main>
+					<main
+						className={`flex-1 flex flex-col ${loading ? "blur" : ""} pt-2`}
+					>
+						{children}
+					</main>
 				</div>
 			</div>
 		</>
