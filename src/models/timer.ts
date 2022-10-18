@@ -37,7 +37,9 @@ export async function findByIdSelect(id: string): Promise<TimerLite | null> {
 	return timer
 }
 
-export async function create(timer: Omit<Timer, "id">): Promise<TimerLite> {
+export async function create(
+	timer: Pick<Timer, "title" | "endTime" | "visiblity" | "password" | "userId">
+): Promise<TimerLite> {
 	// remove the id so SQL can create one itself
 	const newTimer = await prisma.timer.create({
 		data: { ...timer, id: undefined, createdAt: undefined },

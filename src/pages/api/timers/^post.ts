@@ -59,6 +59,7 @@ export default async function postTimer(
 		userId,
 		endTime,
 		visiblity,
+		password: null,
 	})
 
 	console.log("New timer created: ", { newTimer })
