@@ -3,7 +3,7 @@ import Head from "next/head"
 import type { SerialisedTimer } from "../../models/timer"
 import { deSerialiseTimer } from "../../lib/serialise"
 import { dateDifference } from "../../lib/date"
-import Timer from "../../components/timer"
+import { FullTimer } from "../../components/timer"
 
 export default function TimerPage({
 	serialisedTimer,
@@ -11,14 +11,22 @@ export default function TimerPage({
 	serialisedTimer: SerialisedTimer
 }) {
 	const timer = deSerialiseTimer(serialisedTimer)
-	const diff = dateDifference(timer.endTime)
 	if (timer.id === undefined) throw new Error("Timer data missing id")
+	if (timer.user === undefined) throw new Error("Timer data missing user")
+	const diff = dateDifference(timer.endTime)
+
 	return (
 		<>
 			<Head>
 				<title>{`Countdown timer | ${timer.title}`}</title>
 			</Head>
-			<Timer diff={diff} title={timer.title} id={timer.id} preview={false} />
+			<FullTimer
+				diff={diff}
+				title={timer.title}
+				id={timer.id}
+				displayName={timer.user.displayName}
+				userId={timer.user.id}
+			/>
 		</>
 	)
 }
@@ -29,7 +37,7 @@ import { GetStaticProps, GetStaticPaths } from "next"
 
 import {
 	getAllIds as getAllTimerIds,
-	findByIdSelect as findTimerById,
+	findById as findTimerById,
 } from "../../models/timer"
 import { serialiseTimer } from "../../lib/serialise"
 
@@ -45,10 +53,15 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
 	console.log(`[Next.js] running getStaticProps on path /timer/${params?.id}`)
-	if (params === undefined || params.id === "undefined")
+	if (
+		params === undefined ||
+		params.id === "undefined" ||
+		params.id === undefined ||
+		Array.isArray(params.id)
+	)
 		return { notFound: true }
 
-	const timer = await findTimerById(params.id as string)
+	const timer = await findTimerById(params.id)
 	if (!timer) {
 		console.log(`[Next.js] path ${params.id} not found`)
 		return { notFound: true }

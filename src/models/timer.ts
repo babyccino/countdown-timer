@@ -4,21 +4,23 @@ import { Timer, User, Visibility } from "@prisma/client"
 
 import type { Modify } from "../lib/util"
 
-export type TimerLite = Pick<Timer, "id" | "title" | "endTime" | "createdAt">
+export type TimerLite = Pick<
+	Timer,
+	"id" | "title" | "endTime" | "createdAt"
+> & { user?: User }
 export type SerialisedTimer = Modify<
 	TimerLite,
 	{ endTime: string; createdAt: string }
 >
-const timerLiteSelect = {
+const timerLiteSelect: Record<keyof TimerLite, boolean> = {
 	id: true,
 	endTime: true,
 	title: true,
 	createdAt: true,
+	user: false,
 }
 
-export function findById(
-	id: string
-): Promise<(TimerLite & { user: User }) | null> {
+export function findById(id: string): Promise<TimerLite | null> {
 	return prisma.timer.findFirst({
 		where: {
 			id,

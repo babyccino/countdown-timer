@@ -3,8 +3,7 @@ import React, { useRef, useState } from "react"
 import { TimerLite } from "../models/timer"
 import { dateDifference } from "../lib/date"
 import { useAtPageBottom } from "../lib/hooks"
-
-import Timer from "../components/timer"
+import { PreviewTimer } from "../components/timer"
 
 type GetNewTimerCallback = (offset?: string) => Promise<TimerLite[]>
 type GetTimerOffsetCallback = (timer: TimerLite) => string
@@ -32,7 +31,7 @@ export function makeGridWithFilters(
 		// if the the initial filter is selected but there is no initial timers list
 		// then display message saying there are no timers
 		if (isInitialFilter && !initialOffset) {
-			return <div>No timers found</div>
+			return <div className="text-center text-xl pt-6">No timers found</div>
 		}
 
 		const entry = filterMap.get(filter)
@@ -50,9 +49,14 @@ export function makeGridWithFilters(
 
 		return (
 			<>
-				<form>
-					<label>Sort by:</label>
-					<select onChange={(e) => setFilter(e.target.value)}>
+				<form className="flex flex-row justify-center items-baseline pt-2 gap-4">
+					<label className="mb-2 text-sm font-medium text-gray-900">
+						Sort by
+					</label>
+					<select
+						onChange={(e) => setFilter(e.target.value)}
+						className="border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
+					>
 						{filterList.map((filterName) => (
 							<option
 								defaultChecked={filterName === initialFilter}
@@ -116,18 +120,18 @@ export function withInfiniteScroll(
 
 export function PlainGrid({ timers }: { timers: TimerLite[] }): JSX.Element {
 	return (
-		<div className="w-full md:grid grid-cols-3 gap-6 px-4 md:px-8 pt-6">
+		<div className="w-full md:grid grid-cols-3 gap-6 px-4 md:px-8 pt-4">
 			{timers.map(({ title, endTime, id }: TimerLite): JSX.Element => {
 				if (id === undefined) throw new Error("[Next.js] timer id undefined")
 
 				const diff = dateDifference(new Date(endTime))
-				const props = { title, diff, id }
+				const props = {
+					title,
+					diff,
+					id,
+				}
 
-				return (
-					<div key={id}>
-						<Timer {...props} preview />
-					</div>
-				)
+				return <PreviewTimer key={id} {...props} preview />
 			})}
 		</div>
 	)
