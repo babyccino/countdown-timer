@@ -23,27 +23,29 @@ export function makeGridWithFilters(
 	initialTimers: TimerLite[]
 ): () => JSX.Element {
 	const filterList: string[] = Array.from(filterMap.keys())
-	const initialOffset: string = (() => {
-		const offset = initialTimers.at(-1)!.endTime
-		if (typeof offset === "string") return offset
-		return offset.toISOString()
-	})()
+	const initialOffset = initialTimers.at(-1)?.endTime.toISOString()
 
 	return function GridWithFilters(): JSX.Element {
 		const [filter, setFilter] = useState<string>(initialFilter)
 		const isInitialFilter = filter === initialFilter
 
+		// if the the initial filter is selected but there is no initial timers list
+		// then display message saying there are no timers
+		if (isInitialFilter && !initialOffset) {
+			return <div>No timers found</div>
+		}
+
 		const entry = filterMap.get(filter)
 		if (!entry) throw new RangeError("selected filter does not exist")
 		const { getNewTimers, getTimerOffset } = entry
 
-		const offset = isInitialFilter ? initialOffset : undefined
+		const offset = isInitialFilter ? (initialOffset as string) : undefined
 
 		const InfiniteScrollGrid = withInfiniteScroll(
 			PlainGrid,
 			getNewTimers,
 			getTimerOffset,
-			offset as string
+			offset
 		)
 
 		return (
