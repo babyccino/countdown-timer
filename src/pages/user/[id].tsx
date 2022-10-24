@@ -53,7 +53,26 @@ export default function UserPage({
 			<Head>
 				<title>{`Countdown timer | ${user.displayName}'s timers`}</title>
 			</Head>
-			<Grid />
+			<div
+				style={{
+					gridTemplateAreas: `
+						'title title sort'
+						'main main main'
+						'main main main'
+					`,
+				}}
+				className="sm:grid sm:grid-cols-3"
+			>
+				<div
+					style={{ gridArea: "title" }}
+					className="flex justify-center items-center"
+				>
+					<h1 className="text-3xl font-['Montserrat'] font-medium py-4 sm:py-0">
+						{user.displayName}&apos;s Timers
+					</h1>
+				</div>
+				<Grid />
+			</div>
 		</>
 	)
 }

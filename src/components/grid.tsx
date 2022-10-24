@@ -120,7 +120,10 @@ export function withInfiniteScroll(
 
 export function PlainGrid({ timers }: { timers: TimerLite[] }): JSX.Element {
 	return (
-		<div className="w-full md:grid grid-cols-3 gap-6 px-4 md:px-8 pt-4">
+		<div
+			style={{ gridArea: "main" }}
+			className="w-full md:grid grid-cols-3 gap-6 px-4 md:px-8 pt-4"
+		>
 			{timers.map(({ title, endTime, id }: TimerLite): JSX.Element => {
 				if (id === undefined) throw new Error("[Next.js] timer id undefined")
 
