@@ -28,7 +28,7 @@ export function findByEmail(email: string): Promise<User | null> {
 	})
 }
 
-export function findByEmailOrCreate(user: User): Promise<User> {
+export function findByEmailOrCreate(user: Omit<User, "id">): Promise<User> {
 	return prisma.user.upsert({
 		where: {
 			email: user.email,
