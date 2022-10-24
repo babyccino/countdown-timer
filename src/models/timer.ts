@@ -1,64 +1,46 @@
 import prisma from "../db"
-import { Timer as PrismaTimer, Visibility } from "@prisma/client"
+export { Visibility } from "@prisma/client"
+import { Timer, User, Visibility } from "@prisma/client"
 
 import type { Modify } from "../lib/util"
 
-// The id will not always be required, ex: when creating a user
-// NextJs doesn't like the Date object with the getStaticProps function
-export type Timer = Modify<
-	PrismaTimer,
-	{
-		id?: string
-		password?: string | null
-		endTime: Date | string
-		createdAt?: Date | string
-	}
+export type TimerLite = Pick<
+	Timer,
+	"id" | "title" | "endTime" | "createdAt"
+> & { user?: User }
+export type SerialisedTimer = Modify<
+	TimerLite,
+	{ endTime: string; createdAt: string }
 >
-export type TimerLite = Pick<Timer, "id" | "title" | "endTime">
-export { Visibility } from "@prisma/client"
+const timerLiteSelect: Record<keyof TimerLite, boolean> = {
+	id: true,
+	endTime: true,
+	title: true,
+	createdAt: true,
+	user: false,
+}
 
-export async function findById(id: string): Promise<Timer | null> {
-	const timer: Timer | null = await prisma.timer.findFirst({
+export function findById(id: string): Promise<TimerLite | null> {
+	return prisma.timer.findFirst({
 		where: {
 			id,
 		},
+		select: { ...timerLiteSelect, user: true },
 	})
-
-	return timer
 }
 
-export async function findByIdSelect(id: string): Promise<TimerLite | null> {
-	const timer = await prisma.timer.findFirst({
-		where: {
-			id,
-		},
-		select: {
-			id: true,
-			endTime: true,
-			title: true,
-		},
-	})
-
-	return timer
-}
-
-export async function create(timer: Timer): Promise<TimerLite> {
+export function create(
+	timer: Pick<Timer, "title" | "endTime" | "visiblity" | "password" | "userId">
+): Promise<TimerLite> {
 	// remove the id so SQL can create one itself
-	const newTimer = await prisma.timer.create({
+	return prisma.timer.create({
 		data: { ...timer, id: undefined, createdAt: undefined },
-		select: {
-			id: true,
-			endTime: true,
-			title: true,
-		},
+		select: timerLiteSelect,
 	})
-
-	return newTimer
 }
 
-export async function getAll(): Promise<Timer[]> {
-	const timers = await prisma.timer.findMany()
-	return timers
+export function getAll(): Promise<Timer[]> {
+	return prisma.timer.findMany()
 }
 
 export async function getAllIds(): Promise<string[]> {
@@ -71,10 +53,10 @@ export async function getAllIds(): Promise<string[]> {
 	return ids.map((obj) => obj.id)
 }
 
-const RECENT_POST_COUNT = 9
-export async function getRecentPublic(offsetDate?: Date): Promise<TimerLite[]> {
-	const timers = await prisma.timer.findMany({
-		take: RECENT_POST_COUNT,
+const POST_COUNT = 9
+export function getByEndTime(offsetDate?: Date): Promise<TimerLite[]> {
+	return prisma.timer.findMany({
+		take: POST_COUNT,
 		orderBy: { endTime: "asc" },
 		where: {
 			visiblity: Visibility.PUBLIC,
@@ -82,12 +64,56 @@ export async function getRecentPublic(offsetDate?: Date): Promise<TimerLite[]> {
 				gt: offsetDate,
 			},
 		},
-		select: {
-			id: true,
-			title: true,
-			endTime: true,
-		},
+		select: timerLiteSelect,
 	})
+}
 
-	return timers
+export function getByTimeCreated(offsetDate?: Date): Promise<TimerLite[]> {
+	return prisma.timer.findMany({
+		take: POST_COUNT,
+		orderBy: { createdAt: "asc" },
+		where: {
+			visiblity: Visibility.PUBLIC,
+			createdAt: {
+				gt: offsetDate,
+			},
+		},
+		select: timerLiteSelect,
+	})
+}
+
+export function getFromUserByEndTime(
+	userId: string,
+	offsetDate?: Date
+): Promise<TimerLite[]> {
+	return prisma.timer.findMany({
+		take: POST_COUNT,
+		orderBy: { endTime: "asc" },
+		where: {
+			visiblity: Visibility.PUBLIC,
+			endTime: {
+				gt: offsetDate,
+			},
+			userId,
+		},
+		select: timerLiteSelect,
+	})
+}
+
+export function getFromUserByTimeCreated(
+	userId: string,
+	offsetDate?: Date
+): Promise<TimerLite[]> {
+	return prisma.timer.findMany({
+		take: POST_COUNT,
+		orderBy: { createdAt: "asc" },
+		where: {
+			visiblity: Visibility.PUBLIC,
+			createdAt: {
+				gt: offsetDate,
+			},
+			userId,
+		},
+		select: timerLiteSelect,
+	})
 }

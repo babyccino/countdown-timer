@@ -16,7 +16,7 @@ export default async function User(
 		const id = authenticate(req, res)
 		const user = await findById(id)
 
-		return res.json({ ...user, id: undefined })
+		return res.json({ ...user })
 	} catch (error) {
 		const status = error instanceof ServerError ? error.status : 500
 		return res.status(status).json(error)

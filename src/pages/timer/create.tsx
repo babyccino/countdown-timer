@@ -46,7 +46,8 @@ function Error(): JSX.Element {
 }
 
 export default function Create() {
-	const [visibility, setVisibility] = useState("Public")
+	// Todo: add pw
+	// const [visibility, setVisibility] = useState("Public")
 	const [postError, setPostError] = useState(false)
 	const [loading, setLoading] = useState(false)
 	const router = useRouter()
@@ -159,7 +160,8 @@ export default function Create() {
 										Visibility
 									</label>
 									<select
-										onChange={(e) => setVisibility(e.target.value)}
+										// Todo: add pw
+										// onChange={(e) => setVisibility(e.target.value)}
 										id="visibility"
 										name="visibility"
 										className="mt-1 block w-full py-2 px-3 border-gray-300 bg-white rounded-md border focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
