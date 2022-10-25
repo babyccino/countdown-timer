@@ -65,20 +65,19 @@ export const Timer = memo(function Timer_({
 
 	return (
 		<article className={styling.article}>
-			<Link href={`/timer/${id}`}>
-				<a
-					className={
-						preview ? "flex flex-col justify-center h-[4.7rem] mx-1" : undefined
-					}
-				>
-					<h1 className={styling.title}>{title}</h1>
-				</a>
+			<Link
+				href={`/timer/${id}`}
+				className={
+					preview ? "flex flex-col justify-center h-[4.7rem] mx-1" : undefined
+				}
+			>
+				<h1 className={styling.title}>{title}</h1>
 			</Link>
 			<TimerInner dateDifference={diff} preview={preview} />
 
 			{!preview && (
-				<Link href={`/user/${userId}`}>
-					<a className="py-12 text-xl">Created by {displayName}</a>
+				<Link href={`/user/${userId}`} className="py-12 text-xl">
+					Created by {displayName}
 				</Link>
 			)}
 		</article>

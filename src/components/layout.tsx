@@ -17,14 +17,13 @@ function CreateButton(): JSX.Element {
 			}}
 			className="fixed w-14 h-14 text-center bottom-4 right-4 text-6xl bg-indigo-600 "
 		>
-			<Link href="/timer/create">
-				<a
-					style={{ bottom: "0.6rem" }}
-					className="relative block bottom-2 text-gray-100"
-					aria-label="create new timer"
-				>
-					+
-				</a>
+			<Link
+				href="/timer/create"
+				style={{ bottom: "0.6rem" }}
+				className="relative block bottom-2 text-gray-100"
+				aria-label="create new timer"
+			>
+				+
 			</Link>
 		</div>
 	)
@@ -70,10 +69,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 			<div className="min-h-screen flex justify-center">
 				<div className="min-h-screen w-full lg:max-w-7xl flex flex-col">
 					<header className="flex flex-row justify-between md:justify-start items-center py-2 px-4 sm:px-6 md:px-8 md:space-x-10 border-b-2 border-gray-100">
-						<Link href="/" className="flex justify-start">
-							<a aria-label="homepage">
-								<Image src="/logo.webp" alt="logo" height="70px" width="70px" />
-							</a>
+						<Link href="/" className="flex justify-start" aria-label="homepage">
+							<Image src="/logo.webp" alt="logo" height={70} width={70} />
 						</Link>
 						<div className="flex flex-row flex-1 items-center justify-end lg:w-0">
 							{user && !error ? (
