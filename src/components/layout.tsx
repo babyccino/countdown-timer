@@ -6,7 +6,7 @@ import { deleteCookie } from "cookies-next"
 import React, { useEffect, useState } from "react"
 
 import Loading from "./loading"
-import { useUser } from "../lib/hooks"
+import { useUser } from "@/lib/hooks"
 
 function CreateButton(): JSX.Element {
 	return (

@@ -2,7 +2,7 @@ import prisma from "../db"
 export { Visibility } from "@prisma/client"
 import { Timer, User, Visibility } from "@prisma/client"
 
-import type { Modify } from "../lib/util"
+import type { Modify } from "@/lib/util"
 
 export type TimerLite = Pick<
 	Timer,

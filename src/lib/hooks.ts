@@ -4,7 +4,7 @@ import useSWR, { KeyedMutator } from "swr"
 import axios, { AxiosError } from "axios"
 import { getCookie } from "cookies-next"
 
-import { User } from "../models/user"
+import { User } from "@/models/user"
 
 const fetcher = async (url: string): Promise<User> =>
 	(await axios.get<User>(url)).data

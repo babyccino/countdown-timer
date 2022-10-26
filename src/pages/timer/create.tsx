@@ -4,8 +4,8 @@ import { FormEventHandler, useState } from "react"
 
 import axios from "axios"
 
-import { getCurrentDateInHtmlFormat } from "../../lib/date"
-import Loading from "../../components/loading"
+import { getCurrentDateInHtmlFormat } from "@/lib/date"
+import Loading from "@/components/loading"
 
 function Error(): JSX.Element {
 	return (

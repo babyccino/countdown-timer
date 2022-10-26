@@ -1,9 +1,9 @@
 import { useMemo } from "react"
 import Head from "next/head"
 
-import type { TimerLite, SerialisedTimer } from "../models/timer"
-import { makeGridWithFilters, FilterMap } from "../components/grid"
-import { getTimersFromApiServer } from "../lib/util"
+import type { TimerLite, SerialisedTimer } from "@/models/timer"
+import { makeGridWithFilters, FilterMap } from "@/components/grid"
+import { getTimersFromApiServer } from "@/lib/util"
 
 const getNewTimersByEndDate = (offset?: string): Promise<TimerLite[]> =>
 	getTimersFromApiServer({ sort: "enddate", offset })
@@ -61,9 +61,9 @@ export default function Index({
 
 import { GetStaticProps } from "next"
 
-import { serialiseTimer } from "../lib/serialise"
-import { getByEndTime } from "../models/timer"
-import { deSerialiseTimer } from "../lib/serialise"
+import { serialiseTimer } from "@/lib/serialise"
+import { getByEndTime } from "@/models/timer"
+import { deSerialiseTimer } from "@/lib/serialise"
 
 const msInWeek = 1000 * 60 * 60 * 24 * 7
 export const getStaticProps: GetStaticProps = async () => {

@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 
-import { create as createTimer, Visibility } from "../../../models/timer"
-import authenticate from "../../../lib/auth"
-import ServerError from "../../../lib/error"
+import { create as createTimer, Visibility } from "@/models/timer"
+import authenticate from "@/lib/auth"
+import ServerError from "@/lib/error"
 
 export default async function postTimer(
 	req: NextApiRequest,

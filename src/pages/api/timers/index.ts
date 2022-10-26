@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next"
 
 import postTimer from "./^post"
 import getTimers from "./^get"
-import ServerError from "../../../lib/error"
+import ServerError from "@/lib/error"
 
 export default async function timers(
 	req: NextApiRequest,

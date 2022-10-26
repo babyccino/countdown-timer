@@ -1,9 +1,9 @@
 import Head from "next/head"
 
-import type { SerialisedTimer } from "../../models/timer"
-import { deSerialiseTimer } from "../../lib/serialise"
-import { dateDifference } from "../../lib/date"
-import { FullTimer } from "../../components/timer"
+import type { SerialisedTimer } from "@/models/timer"
+import { deSerialiseTimer } from "@/lib/serialise"
+import { dateDifference } from "@/lib/date"
+import { FullTimer } from "@/components/timer"
 
 export default function TimerPage({
 	serialisedTimer,
@@ -38,8 +38,8 @@ import { GetStaticProps, GetStaticPaths } from "next"
 import {
 	getAllIds as getAllTimerIds,
 	findById as findTimerById,
-} from "../../models/timer"
-import { serialiseTimer } from "../../lib/serialise"
+} from "@/models/timer"
+import { serialiseTimer } from "@/lib/serialise"
 
 export const getStaticPaths: GetStaticPaths = async () => {
 	const ids = await getAllTimerIds()

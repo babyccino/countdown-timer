@@ -1,10 +1,10 @@
 import { useMemo } from "react"
 import Head from "next/head"
 
-import type { TimerLite, SerialisedTimer } from "../../models/timer"
-import { deSerialiseTimer } from "../../lib/serialise"
-import { getTimersFromApiServer } from "../../lib/util"
-import { makeGridWithFilters, FilterMap } from "../../components/grid"
+import type { TimerLite, SerialisedTimer } from "@/models/timer"
+import { deSerialiseTimer } from "@/lib/serialise"
+import { getTimersFromApiServer } from "@/lib/util"
+import { makeGridWithFilters, FilterMap } from "@/components/grid"
 
 export default function UserPage({
 	serialisedTimers,
@@ -81,9 +81,9 @@ export default function UserPage({
 
 import { GetStaticProps, GetStaticPaths } from "next"
 
-import { getFromUserByEndTime } from "../../models/timer"
-import { findById, getAllIds, User } from "../../models/user"
-import { serialiseTimer } from "../../lib/serialise"
+import { getFromUserByEndTime } from "@/models/timer"
+import { findById, getAllIds, User } from "@/models/user"
+import { serialiseTimer } from "@/lib/serialise"
 
 export const getStaticPaths: GetStaticPaths = async () => {
 	const ids = await getAllIds()

@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 
-import passport from "../../../lib/passport"
+import passport from "@/lib/passport"
 
 export default function Index(req: NextApiRequest, res: NextApiResponse) {
 	passport.authenticate("google", {

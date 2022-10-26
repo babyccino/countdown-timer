@@ -7,7 +7,7 @@ import {
 	dateDifferenceKeys,
 	formatCategoryString,
 	getGreatestDateDiff,
-} from "../lib/date"
+} from "@/lib/date"
 
 const STYLING = {
 	preview: {

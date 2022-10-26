@@ -1,4 +1,4 @@
-import { SerialisedTimer, TimerLite } from "../models/timer"
+import { SerialisedTimer, TimerLite } from "@/models/timer"
 
 export const serialiseTimer = (timer: TimerLite): SerialisedTimer => ({
 	...timer,

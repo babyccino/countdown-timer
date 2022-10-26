@@ -1,9 +1,9 @@
 import React, { useRef, useState } from "react"
 
-import { TimerLite } from "../models/timer"
-import { dateDifference } from "../lib/date"
-import { useAtPageBottom } from "../lib/hooks"
-import { PreviewTimer } from "../components/timer"
+import { TimerLite } from "@/models/timer"
+import { dateDifference } from "@/lib/date"
+import { useAtPageBottom } from "@/lib/hooks"
+import { PreviewTimer } from "@/components/timer"
 
 type GetNewTimerCallback = (offset?: string) => Promise<TimerLite[]>
 type GetTimerOffsetCallback = (timer: TimerLite) => string

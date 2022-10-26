@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next"
 
-import { findById } from "../../models/user"
-import authenticate from "../../lib/auth"
-import ServerError from "../../lib/error"
+import { findById } from "@/models/user"
+import authenticate from "@/lib/auth"
+import ServerError from "@/lib/error"
 
 export default async function User(
 	req: NextApiRequest,

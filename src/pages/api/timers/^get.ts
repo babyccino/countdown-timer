@@ -1,13 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next"
-import { isValidDate } from "../../../lib/date"
+import { isValidDate } from "@/lib/date"
 
-import ServerError from "../../../lib/error"
+import ServerError from "@/lib/error"
 import {
 	getByEndTime,
 	getByTimeCreated,
 	getFromUserByEndTime,
 	getFromUserByTimeCreated,
-} from "../../../models/timer"
+} from "@/models/timer"
 
 export default async function getTimers(
 	req: NextApiRequest,

@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next"
 
 import { setCookie } from "cookies-next"
 
-import passport from "../../../lib/passport"
+import passport from "@/lib/passport"
 
 export default function Callback(req: NextApiRequest, res: NextApiResponse) {
 	passport.authenticate("google", (error, user, info) => {

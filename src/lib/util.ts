@@ -1,7 +1,7 @@
 import { objectEnumValues } from "@prisma/client/runtime"
 import axios from "axios"
 
-import { TimerLite } from "../models/timer"
+import { TimerLite } from "@/models/timer"
 
 export type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>
 

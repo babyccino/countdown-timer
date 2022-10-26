@@ -2,7 +2,7 @@ import passport from "passport"
 import { Strategy as GoogleStrategy } from "passport-google-oauth2"
 import jwt from "jsonwebtoken"
 
-import { findByEmailOrCreate } from "../models/user"
+import { findByEmailOrCreate } from "@/models/user"
 import { googleClientId, googleClientSecret, url, jwtSecret } from "./config"
 
 passport.use(
