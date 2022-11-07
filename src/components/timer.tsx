@@ -9,32 +9,49 @@ import {
 	getGreatestDateDiff,
 } from "@/lib/date"
 
-const STYLING = {
+interface StyleSheet {
+	article: string
+	title: string
+	finishedInnerContainer: string
+	notFinishedInnerContainer: string
+	innerInnerContainer: string
+	diff: string
+	category: string
+	user: string
+}
+interface StyleSheets {
+	preview: StyleSheet
+	full: StyleSheet
+}
+
+const STYLING: StyleSheets = {
 	preview: {
 		article:
-			"font-['Montserrat'] flex flex-col justify-between text-center min-w-full px-2 py-4 mb-6 md:mb-0 border border-black rounded-3xl",
+			"font-['Montserrat'] flex flex-col justify-between text-center min-w-full px-2 py-4 mb-6 md:mb-0 border border-black rounded-3xl space-y-6",
 		title: "text-3xl overflow-hidden text-center text-ellipsis line-clamp-2",
-		finishedInnerContainer:
-			"mt-4 md:px-2 text-4xl min-h-[5.5rem] md:text-7xl md:min-h-[17rem]",
+		finishedInnerContainer: "md:px-2 text-4xl md:text-7xl",
 		notFinishedInnerContainer: "grid grid-cols-4 md:grid-cols-2 mt-4 md:px-2",
 		innerInnerContainer: "py-2",
 		diff: "text-5xl md:text-8xl",
 		category: "text-base",
+		user: "text-lg pt-2",
 	},
 	full: {
 		article:
-			"font-['Montserrat'] flex flex-col justify-center text-center min-w-full min-h-full px-6 md:px-20 md:pb-2",
+			"font-['Montserrat'] flex flex-col justify-center text-center min-w-full min-h-full px-6 md:px-20 md:pb-2 space-y-6",
 		title: "text-4xl md:text-5xl",
-		finishedInnerContainer: "mt-12 md:px-4 md:pt-12 text-6xl md:text-8xl",
+		finishedInnerContainer: "md:px-4 md:pt-12 text-6xl md:text-8xl",
 		notFinishedInnerContainer:
 			"grid grid-cols-2 md:grid-cols-4 mt-4 md:px-8 md:pt-12",
 		innerInnerContainer: "py-4",
 		diff: "text-8xl md:text-9xl",
 		category: "text-2xl",
+		user: "py-12 text-xl",
 	},
 }
 
-export const Timer = memo(function Timer_({
+const MemoTimerInner = memo(TimerInner)
+function Timer({
 	title,
 	id,
 	diff: _diff,
@@ -46,8 +63,8 @@ export const Timer = memo(function Timer_({
 	id: string
 	diff: DateDifference
 	preview: boolean
-	displayName?: string
-	userId?: string
+	displayName: string
+	userId: string
 }): JSX.Element {
 	if (!preview && (!displayName || !userId))
 		throw new Error("User props must be defined if timer is not preview")
@@ -73,18 +90,16 @@ export const Timer = memo(function Timer_({
 			>
 				<h1 className={styling.title}>{title}</h1>
 			</Link>
-			<TimerInner dateDifference={diff} preview={preview} />
+			<MemoTimerInner dateDifference={diff} preview={preview} />
 
-			{!preview && (
-				<Link href={`/user/${userId}`} className="py-12 text-xl">
-					Created by {displayName}
-				</Link>
-			)}
+			<Link href={`/user/${userId}`} className={styling.user}>
+				Created by {displayName}
+			</Link>
 		</article>
 	)
-})
+}
 
-const TimerInner = memo(function TimerInner_({
+function TimerInner({
 	dateDifference,
 	preview,
 }: {
@@ -119,23 +134,7 @@ const TimerInner = memo(function TimerInner_({
 			{`Finished ${value} ${formattedCategory} ago`}
 		</div>
 	)
-})
-
-export function FullTimer(props: {
-	title: string
-	id: string
-	diff: DateDifference
-	displayName: string
-	userId: string
-}): JSX.Element {
-	return <Timer {...props} preview={false} />
 }
 
-export function PreviewTimer(props: {
-	title: string
-	id: string
-	diff: DateDifference
-	preview: boolean
-}): JSX.Element {
-	return <Timer {...props} preview={true} />
-}
+const MemoTimer = memo(Timer)
+export { MemoTimer as Timer }

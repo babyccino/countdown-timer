@@ -1,12 +1,12 @@
 import React, { useRef, useState } from "react"
 
-import { TimerLite } from "@/models/timer"
+import { Timer } from "@/models/timer"
 import { dateDifference } from "@/lib/date"
 import { useAtPageBottom } from "@/lib/hooks"
-import { PreviewTimer } from "@/components/timer"
+import { Timer as TimerComponent } from "@/components/timer"
 
-type GetNewTimerCallback = (offset?: string) => Promise<TimerLite[]>
-type GetTimerOffsetCallback = (timer: TimerLite) => string
+export type GetNewTimerCallback = (offset?: string) => Promise<Timer[]>
+export type GetTimerOffsetCallback = (timer: Timer) => string
 
 export class FilterMap extends Map<
 	string,
@@ -19,7 +19,7 @@ export class FilterMap extends Map<
 export function makeGridWithFilters(
 	filterMap: FilterMap,
 	initialFilter: string,
-	initialTimers: TimerLite[]
+	initialTimers: Timer[]
 ): () => JSX.Element {
 	const filterList: string[] = Array.from(filterMap.keys())
 	const initialOffset = initialTimers.at(-1)?.endTime.toISOString()
@@ -78,13 +78,13 @@ export function makeGridWithFilters(
 }
 
 export function withInfiniteScroll(
-	GridComponent: ({ timers }: { timers: TimerLite[] }) => JSX.Element,
+	GridComponent: ({ timers }: { timers: Timer[] }) => JSX.Element,
 	getNewTimers: GetNewTimerCallback,
 	getTimerOffset: GetTimerOffsetCallback,
 	initialOffset?: string
 ): () => JSX.Element {
 	return function TimerGrid(): JSX.Element {
-		const [timers, setTimers] = useState<TimerLite[]>([])
+		const [timers, setTimers] = useState<Timer[]>([])
 		const loadingTimers = useRef(false)
 		const reachedEnd = useRef(false)
 
@@ -93,17 +93,15 @@ export function withInfiniteScroll(
 				if (loadingTimers.current || reachedEnd.current) return
 
 				loadingTimers.current = true
-				const fetchedTimers: TimerLite[] = await (async () => {
+				const fetchedTimers: Timer[] = await (async () => {
 					if (timers.length > 0)
-						return getNewTimers(getTimerOffset(timers.at(-1) as TimerLite))
+						return getNewTimers(getTimerOffset(timers.at(-1) as Timer))
 					if (initialOffset) return getNewTimers(initialOffset)
 					return getNewTimers()
 				})()
 
 				if (fetchedTimers.length !== 0) {
-					setTimers((prev: TimerLite[]) =>
-						prev.concat(fetchedTimers as TimerLite[])
-					)
+					setTimers((prev: Timer[]) => prev.concat(fetchedTimers as Timer[]))
 				}
 
 				if (fetchedTimers.length < 9) reachedEnd.current = true
@@ -118,23 +116,25 @@ export function withInfiniteScroll(
 	}
 }
 
-export function PlainGrid({ timers }: { timers: TimerLite[] }): JSX.Element {
+export function PlainGrid({ timers }: { timers: Timer[] }): JSX.Element {
 	return (
 		<div
 			style={{ gridArea: "main" }}
 			className="w-full md:grid grid-cols-3 gap-6 px-4 md:px-8 pt-4"
 		>
-			{timers.map(({ title, endTime, id }: TimerLite): JSX.Element => {
-				if (id === undefined) throw new Error("[Next.js] timer id undefined")
+			{timers.map((timer: Timer): JSX.Element => {
+				if (timer.id === undefined)
+					throw new Error("[Next.js] timer id undefined")
 
-				const diff = dateDifference(new Date(endTime))
+				const diff = dateDifference(new Date(timer.endTime))
 				const props = {
-					title,
+					...timer,
+					displayName: timer.user.displayName,
+					userId: timer.user.id,
 					diff,
-					id,
 				}
 
-				return <PreviewTimer key={id} {...props} preview />
+				return <TimerComponent key={timer.id} {...props} preview />
 			})}
 		</div>
 	)

@@ -3,7 +3,7 @@ import Head from "next/head"
 import type { SerialisedTimer } from "@/models/timer"
 import { deSerialiseTimer } from "@/lib/serialise"
 import { dateDifference } from "@/lib/date"
-import { FullTimer } from "@/components/timer"
+import { Timer } from "@/components/timer"
 
 export default function TimerPage({
 	serialisedTimer,
@@ -20,12 +20,13 @@ export default function TimerPage({
 			<Head>
 				<title>{`Countdown timer | ${timer.title}`}</title>
 			</Head>
-			<FullTimer
+			<Timer
 				diff={diff}
 				title={timer.title}
 				id={timer.id}
 				displayName={timer.user.displayName}
 				userId={timer.user.id}
+				preview={false}
 			/>
 		</>
 	)

@@ -1,11 +1,15 @@
 import { useMemo } from "react"
 import Head from "next/head"
 
-import type { TimerLite, SerialisedTimer } from "@/models/timer"
-import { makeGridWithFilters, FilterMap } from "@/components/grid"
+import type { SerialisedTimer } from "@/models/timer"
+import {
+	makeGridWithFilters,
+	FilterMap,
+	GetNewTimerCallback,
+} from "@/components/grid"
 import { getTimersFromApiServer } from "@/lib/util"
 
-const getNewTimersByEndDate = (offset?: string): Promise<TimerLite[]> =>
+const getNewTimersByEndDate: GetNewTimerCallback = (offset?) =>
 	getTimersFromApiServer({ sort: "enddate", offset })
 const initialFilter = "Default"
 const filterMap = new FilterMap([
@@ -13,25 +17,22 @@ const filterMap = new FilterMap([
 		initialFilter,
 		{
 			getNewTimers: getNewTimersByEndDate,
-			getTimerOffset: (timer: TimerLite): string =>
-				new Date(timer.endTime).toISOString(),
+			getTimerOffset: (timer) => new Date(timer.endTime).toISOString(),
 		},
 	],
 	[
 		"End date",
 		{
 			getNewTimers: getNewTimersByEndDate,
-			getTimerOffset: (timer: TimerLite): string =>
-				new Date(timer.endTime).toISOString(),
+			getTimerOffset: (timer) => new Date(timer.endTime).toISOString(),
 		},
 	],
 	[
 		"Created at",
 		{
-			getNewTimers: async (offset?: string): Promise<TimerLite[]> =>
+			getNewTimers: async (offset?) =>
 				getTimersFromApiServer({ sort: "created", offset }),
-			getTimerOffset: (timer: TimerLite): string =>
-				new Date(timer.createdAt).toISOString(),
+			getTimerOffset: (timer) => new Date(timer.createdAt).toISOString(),
 		},
 	],
 ])

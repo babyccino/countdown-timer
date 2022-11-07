@@ -1,7 +1,7 @@
 import { useMemo } from "react"
 import Head from "next/head"
 
-import type { TimerLite, SerialisedTimer } from "@/models/timer"
+import type { Timer, SerialisedTimer } from "@/models/timer"
 import { deSerialiseTimer } from "@/lib/serialise"
 import { getTimersFromApiServer } from "@/lib/util"
 import { makeGridWithFilters, FilterMap } from "@/components/grid"
@@ -20,27 +20,25 @@ export default function UserPage({
 			[
 				initialFilter,
 				{
-					getNewTimers: (offset?: string): Promise<TimerLite[]> =>
+					getNewTimers: (offset?) =>
 						getTimersFromApiServer({
 							offset,
 							userid: user.id,
 							sort: "enddate",
 						}),
-					getTimerOffset: (timer: TimerLite): string =>
-						new Date(timer.endTime).toISOString(),
+					getTimerOffset: (timer) => new Date(timer.endTime).toISOString(),
 				},
 			],
 			[
 				"Created at",
 				{
-					getNewTimers: (offset?: string): Promise<TimerLite[]> =>
+					getNewTimers: (offset?) =>
 						getTimersFromApiServer({
 							offset,
 							userid: user.id,
 							sort: "created",
 						}),
-					getTimerOffset: (timer: TimerLite): string =>
-						new Date(timer.createdAt).toISOString(),
+					getTimerOffset: (timer) => new Date(timer.createdAt).toISOString(),
 				},
 			],
 		])

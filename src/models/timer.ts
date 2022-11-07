@@ -1,61 +1,70 @@
 import prisma from "../db"
 export { Visibility } from "@prisma/client"
-import { Timer, User, Visibility } from "@prisma/client"
+import {
+	Timer as PrismaTimer,
+	User as PrismaUser,
+	Visibility,
+} from "@prisma/client"
 
 import type { Modify } from "@/lib/util"
 
-export type TimerLite = Pick<
-	Timer,
-	"id" | "title" | "endTime" | "createdAt"
-> & { user?: User }
+export type User = Readonly<Omit<PrismaUser, "email">>
+export type Timer = Readonly<
+	Pick<PrismaTimer, "id" | "title" | "endTime" | "createdAt"> & {
+		user: User
+	}
+>
 export type SerialisedTimer = Modify<
-	TimerLite,
+	Timer,
 	{ endTime: string; createdAt: string }
 >
-const timerLiteSelect: Record<keyof TimerLite, boolean> = {
+const timerLiteSelect = {
 	id: true,
 	endTime: true,
 	title: true,
 	createdAt: true,
-	user: false,
+	user: {
+		select: {
+			id: true,
+			displayName: true,
+		},
+	},
 }
 
-export function findById(id: string): Promise<TimerLite | null> {
-	return prisma.timer.findFirst({
+export const findById = (id: string): Promise<Timer | null> =>
+	prisma.timer.findFirst({
 		where: {
 			id,
 		},
-		select: { ...timerLiteSelect, user: true },
+		select: timerLiteSelect,
 	})
-}
 
-export function create(
-	timer: Pick<Timer, "title" | "endTime" | "visiblity" | "password" | "userId">
-): Promise<TimerLite> {
+export const create = (
+	timer: Pick<
+		PrismaTimer,
+		"title" | "endTime" | "visiblity" | "password" | "userId"
+	>
+): Promise<Timer> =>
 	// remove the id so SQL can create one itself
-	return prisma.timer.create({
+	prisma.timer.create({
 		data: { ...timer, id: undefined, createdAt: undefined },
 		select: timerLiteSelect,
 	})
-}
 
-export function getAll(): Promise<Timer[]> {
-	return prisma.timer.findMany()
-}
+export const getAll = (): Promise<PrismaTimer[]> => prisma.timer.findMany()
 
-export async function getAllIds(): Promise<string[]> {
-	const ids = await prisma.timer.findMany({
-		select: {
-			id: true,
-		},
-	})
-
-	return ids.map((obj) => obj.id)
-}
+export const getAllIds = (): Promise<string[]> =>
+	prisma.timer
+		.findMany({
+			select: {
+				id: true,
+			},
+		})
+		.then((ids) => ids.map((obj) => obj.id))
 
 const POST_COUNT = 9
-export function getByEndTime(offsetDate?: Date): Promise<TimerLite[]> {
-	return prisma.timer.findMany({
+export const getByEndTime = (offsetDate?: Date): Promise<Timer[]> =>
+	prisma.timer.findMany({
 		take: POST_COUNT,
 		orderBy: { endTime: "asc" },
 		where: {
@@ -66,10 +75,9 @@ export function getByEndTime(offsetDate?: Date): Promise<TimerLite[]> {
 		},
 		select: timerLiteSelect,
 	})
-}
 
-export function getByTimeCreated(offsetDate?: Date): Promise<TimerLite[]> {
-	return prisma.timer.findMany({
+export const getByTimeCreated = (offsetDate?: Date): Promise<Timer[]> =>
+	prisma.timer.findMany({
 		take: POST_COUNT,
 		orderBy: { createdAt: "asc" },
 		where: {
@@ -80,13 +88,12 @@ export function getByTimeCreated(offsetDate?: Date): Promise<TimerLite[]> {
 		},
 		select: timerLiteSelect,
 	})
-}
 
-export function getFromUserByEndTime(
+export const getFromUserByEndTime = (
 	userId: string,
 	offsetDate?: Date
-): Promise<TimerLite[]> {
-	return prisma.timer.findMany({
+): Promise<Timer[]> =>
+	prisma.timer.findMany({
 		take: POST_COUNT,
 		orderBy: { endTime: "asc" },
 		where: {
@@ -98,13 +105,12 @@ export function getFromUserByEndTime(
 		},
 		select: timerLiteSelect,
 	})
-}
 
-export function getFromUserByTimeCreated(
+export const getFromUserByTimeCreated = (
 	userId: string,
 	offsetDate?: Date
-): Promise<TimerLite[]> {
-	return prisma.timer.findMany({
+): Promise<Timer[]> =>
+	prisma.timer.findMany({
 		take: POST_COUNT,
 		orderBy: { createdAt: "asc" },
 		where: {
@@ -116,4 +122,3 @@ export function getFromUserByTimeCreated(
 		},
 		select: timerLiteSelect,
 	})
-}
