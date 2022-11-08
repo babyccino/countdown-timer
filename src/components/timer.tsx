@@ -9,21 +9,18 @@ import {
 	getGreatestDateDiff,
 } from "@/lib/date"
 
-interface StyleSheet {
-	article: string
-	title: string
-	finishedInnerContainer: string
-	notFinishedInnerContainer: string
-	innerInnerContainer: string
-	diff: string
-	category: string
-	user: string
+type StyleSheets = {
+	[_ in "preview" | "full"]: {
+		article: string
+		title: string
+		finishedInnerContainer: string
+		notFinishedInnerContainer: string
+		innerInnerContainer: string
+		diff: string
+		category: string
+		user: string
+	}
 }
-interface StyleSheets {
-	preview: StyleSheet
-	full: StyleSheet
-}
-
 const STYLING: StyleSheets = {
 	preview: {
 		article:
