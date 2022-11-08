@@ -8,26 +8,37 @@ import React, { useEffect, useState } from "react"
 import Loading from "./loading"
 import { useUser } from "@/lib/hooks"
 
-function CreateButton(): JSX.Element {
-	return (
-		<div
-			style={{
-				borderRadius: "50%",
-				boxShadow: "0 0 12px -1px rgba(0,0,0,0.9)",
-			}}
-			className="fixed w-14 h-14 text-center bottom-4 right-4 text-6xl bg-indigo-600 "
-		>
-			<Link
-				href="/timer/create"
-				style={{ bottom: "0.6rem" }}
-				className="relative block bottom-2 text-gray-100"
-				aria-label="create new timer"
+const CreateButton = ({ toolTip }: { toolTip: boolean }): JSX.Element => (
+	<div
+		style={{
+			borderRadius: "50%",
+			boxShadow: "0 0 12px -1px rgba(0,0,0,0.6)",
+		}}
+		className="group fixed w-14 h-14 text-center bottom-4 right-4 text-6xl bg-indigo-600 opacity-70 hover:opacity-100 transition-all
+				motion-reduce:transition-none motion-reduce:opacity-100"
+	>
+		{toolTip && (
+			<div
+				className="transition-all motion-reduce:transition-none invisible group-hover:visible group-focus-within:visible group-active:visible
+					opacity-0	group-hover:opacity-100 text-base text-gray-50 absolute bottom-full right-0 -mt-[2px] flex flex-col"
 			>
-				+
-			</Link>
-		</div>
-	)
-}
+				<div className="rounded-md bg-indigo-600 p-2 cursor-default w-36 shadow-xl">
+					Sign in to create your own timer
+				</div>
+				<div className="ml-2 mb-[1px] inline-block overflow-hidden relative">
+					<div className="h-3 w-3 ml-auto mr-5 origin-top-right rotate-45 bg-indigo-600 relative right-0" />
+				</div>
+			</div>
+		)}
+		<Link
+			href="/timer/create"
+			className="relative block bottom-[0.6rem] text-gray-100"
+			aria-label="create new timer"
+		>
+			+
+		</Link>
+	</div>
+)
 
 export default function Layout({ children }: { children: React.ReactNode }) {
 	const router = useRouter()
@@ -68,7 +79,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 			</Head>
 			<div className="min-h-screen flex justify-center">
 				<div className="min-h-screen w-full lg:max-w-7xl flex flex-col">
-					<header className="flex flex-row justify-between md:justify-start items-center py-2 px-4 sm:px-6 md:px-8 md:space-x-10 border-b-2 border-gray-100">
+					<header
+						className="flex flex-row justify-between md:justify-start items-center py-2 px-4 sm:px-6 md:px-8 md:space-x-10 border-b-2
+							border-gray-100"
+					>
 						<Link href="/" className="flex justify-start" aria-label="homepage">
 							<Image src="/logo.webp" alt="logo" height={70} width={70} />
 						</Link>
@@ -80,7 +94,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 									</h2>
 									<a
 										href="#"
-										className="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+										className="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md
+											shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700"
 										onClick={logout}
 										role="button"
 									>
@@ -97,7 +112,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 									</a>
 									<a
 										href={loginHref}
-										className="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+										className="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md
+											shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700"
 									>
 										Sign up
 									</a>
@@ -108,10 +124,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
 					{loading && <Loading />}
 
-					{user && !error && <CreateButton />}
+					<CreateButton toolTip={!user || !!error} />
 
 					<main
-						className={`flex-1 flex flex-col ${loading ? "blur" : ""} py-2`}
+						className={`flex-1 flex flex-col py-2${loading ? " blur" : ""}`}
 					>
 						{children}
 					</main>
