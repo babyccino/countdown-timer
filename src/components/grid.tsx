@@ -40,19 +40,12 @@ export function makeGridWithFilters(
 
 		const offset = isInitialFilter ? (initialOffset as string) : undefined
 
-		const InfiniteScrollGrid = withInfiniteScroll(
-			PlainGrid,
-			getNewTimers,
-			getTimerOffset,
-			offset
-		)
+		const InfiniteScrollGrid = withInfiniteScroll(PlainGrid, getNewTimers, getTimerOffset, offset)
 
 		return (
 			<>
 				<form className="flex flex-row justify-center items-baseline pt-2 gap-4">
-					<label className="mb-2 text-sm font-medium text-gray-900">
-						Sort by
-					</label>
+					<label className="mb-2 text-sm font-medium text-gray-900">Sort by</label>
 					<select
 						onChange={(e) => setFilter(e.target.value)}
 						className="border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5"
@@ -94,8 +87,7 @@ export function withInfiniteScroll(
 
 				loadingTimers.current = true
 				const fetchedTimers: Timer[] = await (async () => {
-					if (timers.length > 0)
-						return getNewTimers(getTimerOffset(timers.at(-1) as Timer))
+					if (timers.length > 0) return getNewTimers(getTimerOffset(timers.at(-1) as Timer))
 					if (initialOffset) return getNewTimers(initialOffset)
 					return getNewTimers()
 				})()
@@ -123,8 +115,7 @@ export function PlainGrid({ timers }: { timers: Timer[] }): JSX.Element {
 			className="w-full md:grid grid-cols-3 gap-6 px-4 md:px-8 pt-4"
 		>
 			{timers.map((timer: Timer): JSX.Element => {
-				if (timer.id === undefined)
-					throw new Error("[Next.js] timer id undefined")
+				if (timer.id === undefined) throw new Error("[Next.js] timer id undefined")
 
 				const diff = dateDifference(new Date(timer.endTime))
 				const props = {

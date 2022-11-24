@@ -110,17 +110,11 @@ export default function Create() {
 					</div>
 				</div>
 				<div className="mt-8 mx-2 md:mt-0 md:col-span-2 border-t-2 md:border-t-0 md:border-l-2 border-gray-100">
-					<form
-						onSubmit={handleSubmit}
-						className="md:pl-6 flex flex-col justify-between"
-					>
+					<form onSubmit={handleSubmit} className="md:pl-6 flex flex-col justify-between">
 						<div className="px-2 py-4 bg-white">
 							<div className="grid grid-cols-6 gap-6">
 								<div className="col-span-6 sm:col-span-4">
-									<label
-										htmlFor="title"
-										className="block text-sm font-medium text-gray-700"
-									>
+									<label htmlFor="title" className="block text-sm font-medium text-gray-700">
 										Title
 									</label>
 									<input
@@ -136,10 +130,7 @@ export default function Create() {
 								</div>
 
 								<div className="col-span-6 sm:col-span-4">
-									<label
-										htmlFor="endDate"
-										className="block text-sm font-medium text-gray-700"
-									>
+									<label htmlFor="endDate" className="block text-sm font-medium text-gray-700">
 										Date
 									</label>
 									<input
@@ -153,10 +144,7 @@ export default function Create() {
 								</div>
 
 								<div className="col-span-6 sm:col-span-3">
-									<label
-										htmlFor="visibility"
-										className="block text-sm font-medium text-gray-700"
-									>
+									<label htmlFor="visibility" className="block text-sm font-medium text-gray-700">
 										Visibility
 									</label>
 									<select

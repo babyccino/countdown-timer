@@ -55,8 +55,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 	}
 
 	useEffect(() => {
-		const handleStart = (url: string) =>
-			url !== router.asPath && setLoading(true)
+		const handleStart = (url: string) => url !== router.asPath && setLoading(true)
 		const handleComplete = (url: string) => setLoading(false)
 
 		router.events.on("routeChangeStart", handleStart)
@@ -126,11 +125,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
 					<CreateButton toolTip={!user || !!error} />
 
-					<main
-						className={`flex-1 flex flex-col py-2${loading ? " blur" : ""}`}
-					>
-						{children}
-					</main>
+					<main className={`flex-1 flex flex-col py-2${loading ? " blur" : ""}`}>{children}</main>
 				</div>
 			</div>
 		</>

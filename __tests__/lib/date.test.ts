@@ -8,10 +8,7 @@ import {
 
 describe("Date difference", () => {
 	it("Difference between two dates is correct", () => {
-		const diff1 = dateDifference(
-			new Date("2022-01-02T12:01:01"),
-			new Date("2022-01-01T11:00:00")
-		)
+		const diff1 = dateDifference(new Date("2022-01-02T12:01:01"), new Date("2022-01-01T11:00:00"))
 		expect(diff1).toEqual({
 			sign: true,
 			days: 1,
@@ -20,10 +17,7 @@ describe("Date difference", () => {
 			seconds: 1,
 		})
 
-		const diff2 = dateDifference(
-			new Date("2022-01-01T11:00:00"),
-			new Date("2022-01-02T12:01:01")
-		)
+		const diff2 = dateDifference(new Date("2022-01-01T11:00:00"), new Date("2022-01-02T12:01:01"))
 		expect(diff2).toEqual({
 			sign: false,
 			days: 1,

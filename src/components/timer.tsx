@@ -38,8 +38,7 @@ const STYLING: StyleSheets = {
 			"font-['Montserrat'] flex flex-col justify-center text-center min-w-full min-h-full px-6 md:px-20 md:pb-2 space-y-6",
 		title: "text-4xl md:text-5xl",
 		finishedInnerContainer: "md:px-4 md:pt-12 text-6xl md:text-8xl",
-		notFinishedInnerContainer:
-			"grid grid-cols-2 md:grid-cols-4 mt-4 md:px-8 md:pt-12",
+		notFinishedInnerContainer: "grid grid-cols-2 md:grid-cols-4 mt-4 md:px-8 md:pt-12",
 		innerInnerContainer: "py-4",
 		diff: "text-8xl md:text-9xl",
 		category: "text-2xl",
@@ -81,9 +80,7 @@ function Timer({
 		<article className={styling.article}>
 			<Link
 				href={`/timer/${id}`}
-				className={
-					preview ? "flex flex-col justify-center h-[4.7rem] mx-1" : undefined
-				}
+				className={preview ? "flex flex-col justify-center h-[4.7rem] mx-1" : undefined}
 			>
 				<h1 className={styling.title}>{title}</h1>
 			</Link>
@@ -113,10 +110,7 @@ function TimerInner({
 					<li key={category} className={styling.innerInnerContainer}>
 						<div className={styling.diff}>{dateDifference[category]}</div>
 						<div className={styling.category}>
-							{formatCategoryString(
-								category,
-								dateDifference[category] as number
-							)}
+							{formatCategoryString(category, dateDifference[category] as number)}
 						</div>
 					</li>
 				))}

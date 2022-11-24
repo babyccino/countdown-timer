@@ -1,9 +1,7 @@
 const getEnvironmentVariable = (environmentVariable: string): string => {
 	const unvalidatedEnvironmentVariable = process.env[environmentVariable]
 	if (unvalidatedEnvironmentVariable === undefined) {
-		throw new Error(
-			`[Next.js] undefined environment variable: ${environmentVariable}`
-		)
+		throw new Error(`[Next.js] undefined environment variable: ${environmentVariable}`)
 	} else {
 		return unvalidatedEnvironmentVariable
 	}

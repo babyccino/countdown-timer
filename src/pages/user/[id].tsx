@@ -61,10 +61,7 @@ export default function UserPage({
 				}}
 				className="sm:grid sm:grid-cols-3"
 			>
-				<div
-					style={{ gridArea: "title" }}
-					className="flex justify-center items-center"
-				>
+				<div style={{ gridArea: "title" }} className="flex justify-center items-center">
 					<h1 className="text-3xl font-['Montserrat'] font-medium py-4 sm:py-0">
 						{user.displayName}&apos;s Timers
 					</h1>
@@ -105,10 +102,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 	}
 
 	const userId = params.id
-	const [timers, user] = await Promise.all([
-		getFromUserByEndTime(userId),
-		findById(userId),
-	])
+	const [timers, user] = await Promise.all([getFromUserByEndTime(userId), findById(userId)])
 	if (!user) {
 		console.log(`[Next.js] path ${params.id} not found`)
 		return { notFound: true }

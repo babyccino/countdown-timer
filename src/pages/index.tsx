@@ -2,11 +2,7 @@ import { useMemo } from "react"
 import Head from "next/head"
 
 import type { SerialisedTimer } from "@/models/timer"
-import {
-	makeGridWithFilters,
-	FilterMap,
-	GetNewTimerCallback,
-} from "@/components/grid"
+import { makeGridWithFilters, FilterMap, GetNewTimerCallback } from "@/components/grid"
 import { getTimersFromApiServer } from "@/lib/util"
 
 const getNewTimersByEndDate: GetNewTimerCallback = (offset?) =>
@@ -30,8 +26,7 @@ const filterMap = new FilterMap([
 	[
 		"Created at",
 		{
-			getNewTimers: async (offset?) =>
-				getTimersFromApiServer({ sort: "created", offset }),
+			getNewTimers: async (offset?) => getTimersFromApiServer({ sort: "created", offset }),
 			getTimerOffset: (timer) => new Date(timer.createdAt).toISOString(),
 		},
 	],
@@ -73,8 +68,7 @@ export const getStaticProps: GetStaticProps = async () => {
 	// get timers which ended in the last week or haven't yet finished
 	const timersEndingSoon = await getByEndTime(oneWeekAgo)
 	// if there aren't enough to populate the dashboard just get timers from the start of time
-	const timers =
-		timersEndingSoon.length < 9 ? await getByEndTime() : timersEndingSoon
+	const timers = timersEndingSoon.length < 9 ? await getByEndTime() : timersEndingSoon
 
 	return {
 		props: {

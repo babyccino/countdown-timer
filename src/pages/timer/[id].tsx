@@ -5,11 +5,7 @@ import { deSerialiseTimer } from "@/lib/serialise"
 import { dateDifference } from "@/lib/date"
 import { Timer } from "@/components/timer"
 
-export default function TimerPage({
-	serialisedTimer,
-}: {
-	serialisedTimer: SerialisedTimer
-}) {
+export default function TimerPage({ serialisedTimer }: { serialisedTimer: SerialisedTimer }) {
 	const timer = deSerialiseTimer(serialisedTimer)
 	if (timer.id === undefined) throw new Error("Timer data missing id")
 	if (timer.user === undefined) throw new Error("Timer data missing user")
@@ -36,10 +32,7 @@ export default function TimerPage({
 
 import { GetStaticProps, GetStaticPaths } from "next"
 
-import {
-	getAllIds as getAllTimerIds,
-	findById as findTimerById,
-} from "@/models/timer"
+import { getAllIds as getAllTimerIds, findById as findTimerById } from "@/models/timer"
 import { serialiseTimer } from "@/lib/serialise"
 
 export const getStaticPaths: GetStaticPaths = async () => {

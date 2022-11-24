@@ -6,8 +6,7 @@ import { getCookie } from "cookies-next"
 
 import { User } from "@/models/user"
 
-const fetcher = async (url: string): Promise<User> =>
-	(await axios.get<User>(url)).data
+const fetcher = async (url: string): Promise<User> => (await axios.get<User>(url)).data
 
 export function useUser(): {
 	user: User | undefined
@@ -53,10 +52,7 @@ export function useAtPageBottom(
 ): void {
 	useEffect(() => {
 		const scrollListener = () => {
-			if (
-				window.scrollY + window.innerHeight + offset + 1 >=
-				document.body.scrollHeight
-			) {
+			if (window.scrollY + window.innerHeight + offset + 1 >= document.body.scrollHeight) {
 				cb(document.body.scrollHeight - window.scrollY + window.innerHeight)
 			}
 		}
@@ -64,5 +60,6 @@ export function useAtPageBottom(
 
 		window.addEventListener("scroll", scrollListener)
 		return () => window.removeEventListener("scroll", scrollListener) // clean up
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [cb, offset, ...dependencies])
 }

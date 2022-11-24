@@ -1,10 +1,6 @@
 import prisma from "../db"
 export { Visibility } from "@prisma/client"
-import {
-	Timer as PrismaTimer,
-	User as PrismaUser,
-	Visibility,
-} from "@prisma/client"
+import { Timer as PrismaTimer, User as PrismaUser, Visibility } from "@prisma/client"
 
 import type { Modify } from "@/lib/util"
 
@@ -14,10 +10,7 @@ export type Timer = Readonly<
 		user: User
 	}
 >
-export type SerialisedTimer = Modify<
-	Timer,
-	{ endTime: string; createdAt: string }
->
+export type SerialisedTimer = Modify<Timer, { endTime: string; createdAt: string }>
 const timerLiteSelect = {
 	id: true,
 	endTime: true,
@@ -40,10 +33,7 @@ export const findById = (id: string): Promise<Timer | null> =>
 	})
 
 export const create = (
-	timer: Pick<
-		PrismaTimer,
-		"title" | "endTime" | "visiblity" | "password" | "userId"
-	>
+	timer: Pick<PrismaTimer, "title" | "endTime" | "visiblity" | "password" | "userId">
 ): Promise<Timer> =>
 	// remove the id so SQL can create one itself
 	prisma.timer.create({
@@ -89,10 +79,7 @@ export const getByTimeCreated = (offsetDate?: Date): Promise<Timer[]> =>
 		select: timerLiteSelect,
 	})
 
-export const getFromUserByEndTime = (
-	userId: string,
-	offsetDate?: Date
-): Promise<Timer[]> =>
+export const getFromUserByEndTime = (userId: string, offsetDate?: Date): Promise<Timer[]> =>
 	prisma.timer.findMany({
 		take: POST_COUNT,
 		orderBy: { endTime: "asc" },
@@ -106,10 +93,7 @@ export const getFromUserByEndTime = (
 		select: timerLiteSelect,
 	})
 
-export const getFromUserByTimeCreated = (
-	userId: string,
-	offsetDate?: Date
-): Promise<Timer[]> =>
+export const getFromUserByTimeCreated = (userId: string, offsetDate?: Date): Promise<Timer[]> =>
 	prisma.timer.findMany({
 		take: POST_COUNT,
 		orderBy: { createdAt: "asc" },

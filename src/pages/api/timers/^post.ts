@@ -4,10 +4,7 @@ import { create as createTimer, Visibility } from "@/models/timer"
 import authenticate from "@/lib/auth"
 import ServerError from "@/lib/error"
 
-export default async function postTimer(
-	req: NextApiRequest,
-	res: NextApiResponse
-): Promise<void> {
+export default async function postTimer(req: NextApiRequest, res: NextApiResponse): Promise<void> {
 	const userId = authenticate(req, res)
 	if (!userId) {
 		throw new ServerError("Unauthorised", 401)
@@ -31,18 +28,12 @@ export default async function postTimer(
 			_visibility === Visibility.PROTECTED
 		)
 	) {
-		throw new ServerError(
-			'Visibility must be "public", "hidden" or "protected"',
-			400
-		)
+		throw new ServerError('Visibility must be "public", "hidden" or "protected"', 400)
 	}
 	const visiblity: Visibility = _visibility as Visibility
 
 	if (title.length < 1 || title.length > 100) {
-		throw new ServerError(
-			"Title length must be between 1 and 100 characters",
-			400
-		)
+		throw new ServerError("Title length must be between 1 and 100 characters", 400)
 	}
 
 	// if time is specified, this time will be an ISO format string

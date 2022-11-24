@@ -6,10 +6,7 @@ import jwt from "jsonwebtoken"
 import { jwtSecret } from "./config"
 import ServerError from "./error"
 
-export default function authenticate(
-	req: NextApiRequest,
-	res: NextApiResponse
-): string {
+export default function authenticate(req: NextApiRequest, res: NextApiResponse): string {
 	// check cookie
 	const token = getCookie("token", { req, res })
 	if (!token) {
