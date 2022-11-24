@@ -4,7 +4,7 @@ import {
 	dateDifference,
 	decrement,
 	htmlMinDateFormat,
-} from "@/lib/date"
+} from "../../src/lib/date"
 
 describe("Date difference", () => {
 	it("Difference between two dates is correct", () => {

@@ -1,4 +1,4 @@
-import { capitalise, makeQueryString } from "@/lib/util"
+import { capitalise, makeQueryString } from "../../src/lib/util"
 
 describe("Utility functions", () => {
 	it("make query string", () => {
