@@ -1,9 +1,5 @@
 {
-	"extends": [
-		"plugin:react/recommended",
-		"standard-with-typescript",
-		"prettier"
-	],
+	"extends": ["next/core-web-vitals"],
 	"rules": {
 		"react/no-unknown-property": ["error", { "ignore": ["jsx"] }]
 	},
