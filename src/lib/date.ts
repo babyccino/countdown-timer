@@ -51,8 +51,13 @@ export function decrement(date: DateDifference): DateDifference {
 	return newDateDiff
 }
 
-export const isZero = ({ seconds, minutes, hours, days }: DateDifference): boolean =>
-	seconds === 0 && minutes === 0 && hours === 0 && days === 0
+/**
+ * Returns true if a {@link DateDifference} is zero in all its fields
+ * @param date
+ * @returns
+ */
+export const isZero = (date: DateDifference): boolean =>
+	date.seconds === 0 && date.minutes === 0 && date.hours === 0 && date.days === 0
 
 export const zeroDateDiff = (): DateDifference => ({
 	seconds: 0,
@@ -77,7 +82,11 @@ export function dateDifference(date1: Date, date2: Date = new Date()): DateDiffe
 
 export const dateDifferenceKeys: (keyof DateDifference)[] = ["days", "hours", "minutes", "seconds"]
 
-// returns the greatest non-zero part of the difference
+/**
+ * Returns the largest non-zero key of a {@link DateDifference} along with its value in a tuple
+ * @param diff
+ * @returns
+ */
 export function getGreatestDateDiff(diff: DateDifference): [keyof DateDifference, number] {
 	if (diff.days > 0) return ["days", diff.days]
 	if (diff.hours > 0) return ["hours", diff.hours]
@@ -85,6 +94,12 @@ export function getGreatestDateDiff(diff: DateDifference): [keyof DateDifference
 	return ["seconds", diff.seconds]
 }
 
+/**
+ * If a value is not a plural removes the "s" off the end of a category name
+ * @param category
+ * @param value
+ * @returns The category with or without the "s" on the end
+ */
 export const formatCategoryString = (category: keyof DateDifference, value: number): string =>
 	// if value is plural remove "s" from the end of the category name
 	capitalise(value !== 1 ? category : category.substring(0, category.length - 1))
