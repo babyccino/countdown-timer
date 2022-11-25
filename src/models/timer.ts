@@ -2,7 +2,6 @@ import prisma from "../db"
 export { Visibility } from "@prisma/client"
 import { Timer as PrismaTimer, User as PrismaUser, Visibility } from "@prisma/client"
 
-import type { Modify } from "@/lib/util"
 import type { Sort } from "@/lib/api-util"
 
 export type User = Readonly<Omit<PrismaUser, "email">>

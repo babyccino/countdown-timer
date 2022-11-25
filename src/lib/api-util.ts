@@ -1,10 +1,11 @@
 import axios from "axios"
 
-import type { Timer } from "@/models/timer"
 import ServerError from "./error"
 import { Modify } from "./util"
 
-export type SerialisedTimer = Modify<Timer, { endTime: string; createdAt: string }>
+import type { Timer } from "@/models/timer"
+
+export type SerialisedTimer = Modify<Timer, Readonly<{ endTime: string; createdAt: string }>>
 
 export const serialiseTimer = (timer: Timer): SerialisedTimer => ({
 	...timer,
