@@ -1,14 +1,10 @@
-import { capitalise, makeQueryString } from "../../src/lib/util"
+import { makeQueryString } from "../../src/lib/api-util"
+import { capitalise } from "../../src/lib/util"
 
 describe("Utility functions", () => {
 	it("make query string", () => {
-		const query = { prop: "val" }
-		const queryString = makeQueryString(query)
-		expect(queryString).toEqual("prop=val")
-
-		const query2 = { prop: "val", prop2: "val2" }
-		const queryString2 = makeQueryString(query2)
-		expect(queryString2).toEqual("prop=val&prop2=val2")
+		const queryString = makeQueryString({ sort: "created", userid: "hi" })
+		expect(queryString).toEqual("sort=created&userid=hi")
 	})
 
 	it("capitalise", () => {
