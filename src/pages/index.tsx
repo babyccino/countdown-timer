@@ -1,9 +1,8 @@
 import { useMemo } from "react"
 import Head from "next/head"
 
-import type { SerialisedTimer } from "@/models/timer"
 import { makeGridWithFilters, FilterMap, GetNewTimerCallback } from "@/components/grid"
-import { getTimersFromApiServer } from "@/lib/util"
+import { getTimersFromApiServer, SerialisedTimer, deSerialiseTimer } from "@/lib/api-util"
 
 const getNewTimersByEndDate: GetNewTimerCallback = (offset?) =>
 	getTimersFromApiServer({ sort: "enddate", offset })
@@ -57,18 +56,17 @@ export default function Index({
 
 import { GetStaticProps } from "next"
 
-import { serialiseTimer } from "@/lib/serialise"
-import { getByEndTime } from "@/models/timer"
-import { deSerialiseTimer } from "@/lib/serialise"
+import { getPublicTimers } from "@/models/timer"
+import { serialiseTimer } from "@/lib/api-util"
 
 const msInWeek = 1000 * 60 * 60 * 24 * 7
 export const getStaticProps: GetStaticProps = async () => {
 	const oneWeekAgo = new Date(Date.now() - msInWeek)
 
 	// get timers which ended in the last week or haven't yet finished
-	const timersEndingSoon = await getByEndTime(oneWeekAgo)
+	const timersEndingSoon = await getPublicTimers("enddate", oneWeekAgo)
 	// if there aren't enough to populate the dashboard just get timers from the start of time
-	const timers = timersEndingSoon.length < 9 ? await getByEndTime() : timersEndingSoon
+	const timers = timersEndingSoon.length < 9 ? await getPublicTimers("enddate") : timersEndingSoon
 
 	return {
 		props: {

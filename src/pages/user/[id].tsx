@@ -1,9 +1,12 @@
 import { useMemo } from "react"
 import Head from "next/head"
 
-import type { Timer, SerialisedTimer } from "@/models/timer"
-import { deSerialiseTimer } from "@/lib/serialise"
-import { getTimersFromApiServer } from "@/lib/util"
+import {
+	deSerialiseTimer,
+	getTimersFromApiServer,
+	SerialisedTimer,
+	serialiseTimer,
+} from "@/lib/api-util"
 import { makeGridWithFilters, FilterMap } from "@/components/grid"
 
 export default function UserPage({
@@ -76,9 +79,8 @@ export default function UserPage({
 
 import { GetStaticProps, GetStaticPaths } from "next"
 
-import { getFromUserByEndTime } from "@/models/timer"
+import { getPublicTimersFromUser } from "@/models/timer"
 import { findById, getAllIds, User } from "@/models/user"
-import { serialiseTimer } from "@/lib/serialise"
 
 export const getStaticPaths: GetStaticPaths = async () => {
 	const ids = await getAllIds()
@@ -102,7 +104,10 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 	}
 
 	const userId = params.id
-	const [timers, user] = await Promise.all([getFromUserByEndTime(userId), findById(userId)])
+	const [timers, user] = await Promise.all([
+		getPublicTimersFromUser("enddate", userId),
+		findById(userId),
+	])
 	if (!user) {
 		console.log(`[Next.js] path ${params.id} not found`)
 		return { notFound: true }

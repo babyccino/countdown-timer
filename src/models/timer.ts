@@ -3,6 +3,7 @@ export { Visibility } from "@prisma/client"
 import { Timer as PrismaTimer, User as PrismaUser, Visibility } from "@prisma/client"
 
 import type { Modify } from "@/lib/util"
+import type { Sort } from "@/lib/api-util"
 
 export type User = Readonly<Omit<PrismaUser, "email">>
 export type Timer = Readonly<
@@ -10,7 +11,6 @@ export type Timer = Readonly<
 		user: User
 	}
 >
-export type SerialisedTimer = Modify<Timer, { endTime: string; createdAt: string }>
 const timerLiteSelect = {
 	id: true,
 	endTime: true,
@@ -53,56 +53,59 @@ export const getAllIds = (): Promise<string[]> =>
 		.then((ids) => ids.map((obj) => obj.id))
 
 const POST_COUNT = 9
-export const getByEndTime = (offsetDate?: Date): Promise<Timer[]> =>
-	prisma.timer.findMany({
-		take: POST_COUNT,
-		orderBy: { endTime: "asc" },
-		where: {
-			visiblity: Visibility.PUBLIC,
-			endTime: {
-				gt: offsetDate,
-			},
-		},
-		select: timerLiteSelect,
-	})
 
-export const getByTimeCreated = (offsetDate?: Date): Promise<Timer[]> =>
-	prisma.timer.findMany({
-		take: POST_COUNT,
-		orderBy: { createdAt: "asc" },
-		where: {
-			visiblity: Visibility.PUBLIC,
-			createdAt: {
-				gt: offsetDate,
-			},
-		},
-		select: timerLiteSelect,
-	})
+export const getPublicTimers = (sort: Sort, offsetDate?: Date): Promise<Timer[]> =>
+	sort === "enddate"
+		? prisma.timer.findMany({
+				take: POST_COUNT,
+				orderBy: { endTime: "asc" },
+				where: {
+					visiblity: Visibility.PUBLIC,
+					endTime: {
+						gt: offsetDate,
+					},
+				},
+				select: timerLiteSelect,
+		  })
+		: prisma.timer.findMany({
+				take: POST_COUNT,
+				orderBy: { createdAt: "asc" },
+				where: {
+					visiblity: Visibility.PUBLIC,
+					createdAt: {
+						gt: offsetDate,
+					},
+				},
+				select: timerLiteSelect,
+		  })
 
-export const getFromUserByEndTime = (userId: string, offsetDate?: Date): Promise<Timer[]> =>
-	prisma.timer.findMany({
-		take: POST_COUNT,
-		orderBy: { endTime: "asc" },
-		where: {
-			visiblity: Visibility.PUBLIC,
-			endTime: {
-				gt: offsetDate,
-			},
-			userId,
-		},
-		select: timerLiteSelect,
-	})
-
-export const getFromUserByTimeCreated = (userId: string, offsetDate?: Date): Promise<Timer[]> =>
-	prisma.timer.findMany({
-		take: POST_COUNT,
-		orderBy: { createdAt: "asc" },
-		where: {
-			visiblity: Visibility.PUBLIC,
-			createdAt: {
-				gt: offsetDate,
-			},
-			userId,
-		},
-		select: timerLiteSelect,
-	})
+export const getPublicTimersFromUser = (
+	sort: Sort,
+	userId: string,
+	offsetDate?: Date
+): Promise<Timer[]> =>
+	sort === "enddate"
+		? prisma.timer.findMany({
+				take: POST_COUNT,
+				orderBy: { endTime: "asc" },
+				where: {
+					visiblity: Visibility.PUBLIC,
+					endTime: {
+						gt: offsetDate,
+					},
+					userId,
+				},
+				select: timerLiteSelect,
+		  })
+		: prisma.timer.findMany({
+				take: POST_COUNT,
+				orderBy: { createdAt: "asc" },
+				where: {
+					visiblity: Visibility.PUBLIC,
+					createdAt: {
+						gt: offsetDate,
+					},
+					userId,
+				},
+				select: timerLiteSelect,
+		  })
